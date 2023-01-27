@@ -1,11 +1,12 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { Inject, Module } from '@nestjs/common';
+import { ConfigModule, ConfigService, ConfigType } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import databaseConfig from './config/database.config';
 import { ENV_FILES } from './config/env_files';
 
 import Joi from 'joi';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
@@ -21,6 +22,14 @@ import Joi from 'joi';
         DATABASE_URL: Joi.string().required(),
         DATABASE_PASSWORD: Joi.string().required(),
       }),
+    }),
+    MongooseModule.forRootAsync({
+      useFactory: async (config: ConfigType<typeof databaseConfig>) => {
+        return {
+          uri: config.DATABASE_URL,
+        };
+      },
+      inject: [databaseConfig.KEY],
     }),
     AuthModule,
   ],
