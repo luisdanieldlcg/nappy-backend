@@ -16,6 +16,9 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    // Fix Joi compat
+    // See https://stackoverflow.com/questions/73153403/joi-getting-validationschema-joi-object-error
+    "esModuleInterop": true
   }
 }
