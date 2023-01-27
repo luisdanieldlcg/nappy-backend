@@ -14,7 +14,7 @@ export class SignupDTO {
   @IsNotEmpty()
   @MinLength(minRequiredPasswordLength)
   readonly password: string;
-  @Match(SignupDTO, (dto) => dto, {
+  @Match(SignupDTO, (dto) => dto.password, {
     message: 'the passwords entered do not match.',
   })
   readonly passwordConfirm: string;
