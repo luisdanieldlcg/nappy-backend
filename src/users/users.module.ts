@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { injectAllHooks } from './user.hooks';
+import { addAllHooks } from './user.hooks';
 import { UserRepository } from './user.repository';
 import { UserService } from './user.service';
 
@@ -9,7 +9,7 @@ import { UserService } from './user.service';
     MongooseModule.forFeatureAsync([
       {
         name: 'User',
-        useFactory: injectAllHooks,
+        useFactory: addAllHooks,
       },
     ]),
   ],

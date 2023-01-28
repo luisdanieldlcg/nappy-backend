@@ -1,15 +1,29 @@
-import { Module } from '@nestjs/common';
+import { HttpException, Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
-import databaseConfig from './config/database.config';
+import databaseConfig from './config/main.config';
 import { ENV_FILES } from './config/env_files';
-
 import Joi from 'joi';
 import { MongooseModule } from '@nestjs/mongoose';
+import { LoggerModule } from 'nestjs-pino';
+import { APP_FILTER } from '@nestjs/core';
+import { HttpExceptionFilter } from './exceptions/filters/http-exception.filter';
 
 @Module({
   imports: [
+    LoggerModule.forRoot({
+      pinoHttp: {
+        transport: {
+          target: 'pino-pretty',
+        },
+        autoLogging: false,
+        serializers: {
+          req: () => undefined,
+          res: () => undefined,
+        },
+      },
+    }),
     ConfigModule.forRoot({
       isGlobal: true, // Allow config module everywhere
       envFilePath: ENV_FILES[process.env.NODE_ENV] || '.env',
@@ -36,6 +50,11 @@ import { MongooseModule } from '@nestjs/mongoose';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}

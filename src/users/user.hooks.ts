@@ -14,7 +14,7 @@ async function handlePasswordHash(next) {
   return next();
 }
 
-export const injectAllHooks = () => {
+export const addAllHooks = () => {
   const schema = UserSchema;
   schema.pre('save', handlePasswordHash);
   return schema;

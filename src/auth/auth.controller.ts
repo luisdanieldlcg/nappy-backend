@@ -12,11 +12,11 @@ import { LoginDTO } from './dtos/login_dto';
 import { SignupDTO } from './dtos/signup_dto';
 
 @Controller('auth')
+@UsePipes(ValidationPipe)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  @UsePipes(ValidationPipe)
   @HttpCode(HttpStatus.OK)
   async login(@Body() input: LoginDTO) {
     const response = await this.authService.login(input);
@@ -24,7 +24,6 @@ export class AuthController {
   }
 
   @Post('signup')
-  @UsePipes(ValidationPipe)
   async signup(@Body() input: SignupDTO) {
     const response = await this.authService.register(input);
     return response;
