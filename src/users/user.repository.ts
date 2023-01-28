@@ -1,19 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { User } from './schemas/user.schema';
+import { SignupDTO } from 'src/auth/dtos/signup_dto';
+import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
 export class UserRepository {
-  constructor(@InjectModel(User.name) private user: Model<User>) {}
+  constructor(@InjectModel(User.name) private user: Model<UserDocument>) {}
 
-  async findOne(filter: FilterQuery<User>): Promise<User> {
-    return this.user.findOne(filter);
-  }
-
-  async create(user: User): Promise<User> {
+  async create(user: SignupDTO): Promise<User> {
     const output = new this.user(user);
     await output.save();
     return output;
+  }
+
+  async findOne(filter: FilterQuery<User>): Promise<UserDocument> {
+    return this.user.findOne(filter);
   }
 }
