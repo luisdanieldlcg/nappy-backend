@@ -8,5 +8,7 @@ export default registerAs('database', () => {
   );
   return {
     DATABASE_URL,
+    JWT_PRIVATE_KEY: process.env.JWT_PRIVATE_KEY,
+    JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
   };
 });

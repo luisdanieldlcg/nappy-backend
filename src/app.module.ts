@@ -21,6 +21,8 @@ import { MongooseModule } from '@nestjs/mongoose';
         PORT: Joi.number().required(),
         DATABASE_URL: Joi.string().required(),
         DATABASE_PASSWORD: Joi.string().required(),
+        JWT_PRIVATE_KEY: Joi.string().required(),
+        JWT_EXPIRES_IN: Joi.required(),
       }),
     }),
     MongooseModule.forRootAsync({

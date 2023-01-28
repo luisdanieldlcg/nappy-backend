@@ -7,8 +7,11 @@ import { UserRepository } from './user.repository';
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  public async findByEmail(email: string): Promise<User> {
-    return this.userRepository.findOne({ email });
+  public async findByEmail(
+    email: string,
+    includeOrExclude?: string,
+  ): Promise<User> {
+    return this.userRepository.findOne({ email }, includeOrExclude);
   }
   public async createUser(dto: SignupDTO): Promise<User> {
     const user = await this.userRepository.create({

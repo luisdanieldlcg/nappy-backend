@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import databaseConfig from 'src/config/database.config';
 import { UserService } from 'src/users/user.service';
-import { check } from 'src/utils/bcrypt';
+import { checkHash } from 'src/utils/bcrypt';
 import { LoginDTO } from './dtos/login_dto';
 import { SignupDTO } from './dtos/signup_dto';
 import { InvalidCredentialsException } from './exceptions/invalid_credentials.exception';
@@ -11,6 +13,8 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
+    @Inject(databaseConfig.KEY)
+    private readonly configService: ConfigType<typeof databaseConfig>,
   ) {}
 
   public async register(dto: SignupDTO) {
@@ -18,26 +22,28 @@ export class AuthService {
     const token = await this.signToken(user._id);
     return {
       email: user.email,
-      token,
+      accessToken: token,
     };
   }
 
   public async login(dto: LoginDTO) {
-    const user = await this.userService.findByEmail(dto.email);
+    const user = await this.userService.findByEmail(dto.email, '+password');
     if (!user) {
       throw new InvalidCredentialsException();
     }
-    const didMatch = await check({
+    const didMatch = await checkHash({
       raw: dto.password,
       hash: user.password,
     });
     if (!didMatch) {
       throw new InvalidCredentialsException();
     }
-    const token = this.signToken(user._id);
+
+    const token = await this.signToken(user._id);
+
     return {
       email: user.email,
-      idToken: token,
+      accessToken: token,
     };
   }
 
@@ -47,8 +53,8 @@ export class AuthService {
         id,
       },
       {
-        privateKey: 'key',
-        expiresIn: 60 * 60, // 1 hour in seconds
+        privateKey: this.configService.JWT_PRIVATE_KEY,
+        expiresIn: this.configService.JWT_EXPIRES_IN,
       },
     );
 

@@ -14,7 +14,10 @@ export class UserRepository {
     return output;
   }
 
-  async findOne(filter: FilterQuery<User>): Promise<UserDocument> {
-    return this.user.findOne(filter);
+  async findOne(
+    filter: FilterQuery<User>,
+    includeOrExclude: string,
+  ): Promise<UserDocument> {
+    return this.user.findOne(filter).select(includeOrExclude);
   }
 }

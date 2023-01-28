@@ -14,6 +14,7 @@ export const passwordRules: Validation = {
   type: String,
   required: [true, "'password' is missing."],
   minlength: minRequiredPasswordLength,
+  select: false,
 };
 
 export const passwordConfirmRules: Validation = {

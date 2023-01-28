@@ -1,4 +1,4 @@
-import { hash } from 'src/utils/bcrypt';
+import { makeHash } from 'src/utils/bcrypt';
 import { UserSchema } from './schemas/user.schema';
 
 async function handlePasswordHash(next) {
@@ -6,7 +6,7 @@ async function handlePasswordHash(next) {
     return next();
   }
   try {
-    this.password = await hash(this.password);
+    this.password = await makeHash(this.password);
     this.passwordConfirm = undefined;
   } catch (error) {
     console.log(error);
