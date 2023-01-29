@@ -1,4 +1,4 @@
-import { HttpException, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
@@ -8,7 +8,7 @@ import Joi from 'joi';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LoggerModule } from 'nestjs-pino';
 import { APP_FILTER } from '@nestjs/core';
-import { HttpExceptionFilter } from './exceptions/filters/http-exception.filter';
+import { AllExceptionsFilter } from './exceptions/filters/all-exceptions.filter';
 
 @Module({
   imports: [
@@ -53,7 +53,7 @@ import { HttpExceptionFilter } from './exceptions/filters/http-exception.filter'
   providers: [
     {
       provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
+      useClass: AllExceptionsFilter,
     },
   ],
 })

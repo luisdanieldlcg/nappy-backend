@@ -18,6 +18,7 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @UsePipes()
   async login(@Body() input: LoginDTO) {
     const response = await this.authService.login(input);
     return response;

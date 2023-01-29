@@ -5,7 +5,7 @@ import { UserService } from 'src/users/user.service';
 import { checkHash } from 'src/utils/bcrypt';
 import { LoginDTO } from './dtos/login_dto';
 import { SignupDTO } from './dtos/signup_dto';
-import { InvalidCredentialsException } from './exceptions/invalid-credentials.exception';
+import { InvalidCredentialsException } from '../exceptions/invalid-credentials.exception';
 import databaseConfig from 'src/config/main.config';
 
 @Injectable()
