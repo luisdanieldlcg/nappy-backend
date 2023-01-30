@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AuthModule } from './auth/auth.module';
-import databaseConfig from './config/main.config';
-import { ENV_FILES } from './config/env_files';
+import { AppController } from './app.controller.js';
+import { AuthModule } from './auth/auth.module.js';
+import databaseConfig from './config/main.config.js';
+import { ENV_FILES } from './config/env_files.js';
 import Joi from 'joi';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LoggerModule } from 'nestjs-pino';
 import { APP_FILTER } from '@nestjs/core';
-import { AllExceptionsFilter } from './exceptions/filters/all-exceptions.filter';
+import { AllExceptionsFilter } from './exceptions/filters/all-exceptions.filter.js';
 
 @Module({
   imports: [
@@ -35,9 +35,10 @@ import { AllExceptionsFilter } from './exceptions/filters/all-exceptions.filter'
         PORT: Joi.number().required(),
         DATABASE_URL: Joi.string().required(),
         DATABASE_PASSWORD: Joi.string().required(),
-        JWT_PRIVATE_KEY: Joi.string().required(),
-        JWT_EXPIRES_IN: Joi.required(),
-        JWT_COOKIE_EXPIRES_IN: Joi.number().required(),
+        TOKEN_PRIVATE_KEY: Joi.string().required(),
+        ACCESS_TOKEN_EXPIRES_IN: Joi.required(),
+        REFRESH_TOKEN_EXPIRES_IN: Joi.required(),
+        TOKEN_COOKIE_EXPIRES_IN: Joi.number().required(),
       }),
     }),
     MongooseModule.forRootAsync({

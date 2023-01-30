@@ -13,17 +13,23 @@ export class SettingsService {
   ) {}
 
   public jwtCookie(): CookieOptions {
-    const expiresIn = this.config.JWT_COOKIE_EXPIRES_IN;
+    const expiresIn = this.config.TOKEN_COOKIE_EXPIRES_IN;
     return {
       httpOnly: true,
       //secure: true,
       expires: new Date(Date.now() + daysInMillis(expiresIn)),
     };
   }
-  public jwtSign(): JwtSignOptions {
+  public jwtAccessToken(): JwtSignOptions {
     return {
-      privateKey: this.config.JWT_PRIVATE_KEY,
-      expiresIn: this.config.JWT_EXPIRES_IN,
+      privateKey: this.config.TOKEN_PRIVATE_KEY,
+      expiresIn: this.config.ACCESS_TOKEN_EXPIRES_IN,
+    };
+  }
+  public jwtRefreshToken(): JwtSignOptions {
+    return {
+      privateKey: this.config.TOKEN_PRIVATE_KEY,
+      expiresIn: this.config.REFRESH_TOKEN_EXPIRES_IN,
     };
   }
 }

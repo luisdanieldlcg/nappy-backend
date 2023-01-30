@@ -28,3 +28,9 @@ export const passwordConfirmRules: Validation = {
     },
   },
 };
+
+export const refreshTokenRules: Validation = {
+  type: String,
+  required: false,
+  default: undefined,
+};

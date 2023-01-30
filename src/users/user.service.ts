@@ -13,6 +13,10 @@ export class UserService {
   ): Promise<User> {
     return this.userRepository.findOne({ email }, includeOrExclude);
   }
+  public async findById(id: string, includeOrExlude?: string): Promise<User> {
+    return this.userRepository.findById(id, includeOrExlude);
+  }
+
   public async createUser(dto: SignupDTO): Promise<User> {
     const user = await this.userRepository.create({
       email: dto.email,

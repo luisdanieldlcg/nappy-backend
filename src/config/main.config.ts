@@ -8,9 +8,10 @@ export default registerAs('main', () => {
   );
   return {
     DATABASE_URL,
-    JWT_PRIVATE_KEY: process.env.JWT_PRIVATE_KEY,
-    JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
-    JWT_COOKIE_EXPIRES_IN: parseInt(process.env.JWT_COOKIE_EXPIRES_IN),
+    TOKEN_PRIVATE_KEY: process.env.TOKEN_PRIVATE_KEY,
+    TOKEN_COOKIE_EXPIRES_IN: parseInt(process.env.TOKEN_COOKIE_EXPIRES_IN),
+    ACCESS_TOKEN_EXPIRES_IN: process.env.ACCESS_TOKEN_EXPIRES_IN,
+    REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN,
     ENVIRONMENT: process.env.NODE_ENV,
   };
 });
