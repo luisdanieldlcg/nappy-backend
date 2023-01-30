@@ -1,20 +1,18 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ConfigType } from '@nestjs/config';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/users/user.service';
 import { checkHash } from 'src/utils/bcrypt';
 import { LoginDTO } from './dtos/login_dto';
 import { SignupDTO } from './dtos/signup_dto';
 import { InvalidCredentialsException } from '../exceptions/invalid-credentials.exception';
-import databaseConfig from 'src/config/main.config';
+import { SettingsService } from 'src/settings/settings.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
-    @Inject(databaseConfig.KEY)
-    private readonly configService: ConfigType<typeof databaseConfig>,
+    private readonly settings: SettingsService,
   ) {}
 
   public async register(dto: SignupDTO) {
@@ -49,15 +47,9 @@ export class AuthService {
 
   private async signToken(id: string) {
     const token = await this.jwtService.signAsync(
-      {
-        id,
-      },
-      {
-        privateKey: this.configService.JWT_PRIVATE_KEY,
-        expiresIn: this.configService.JWT_EXPIRES_IN,
-      },
+      { id },
+      this.settings.jwtSign(),
     );
-
     // TODO: generate refresh token
     return token;
   }

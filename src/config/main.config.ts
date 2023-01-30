@@ -10,6 +10,7 @@ export default registerAs('main', () => {
     DATABASE_URL,
     JWT_PRIVATE_KEY: process.env.JWT_PRIVATE_KEY,
     JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
+    JWT_COOKIE_EXPIRES_IN: parseInt(process.env.JWT_COOKIE_EXPIRES_IN),
     ENVIRONMENT: process.env.NODE_ENV,
   };
 });

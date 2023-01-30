@@ -37,6 +37,7 @@ import { AllExceptionsFilter } from './exceptions/filters/all-exceptions.filter'
         DATABASE_PASSWORD: Joi.string().required(),
         JWT_PRIVATE_KEY: Joi.string().required(),
         JWT_EXPIRES_IN: Joi.required(),
+        JWT_COOKIE_EXPIRES_IN: Joi.number().required(),
       }),
     }),
     MongooseModule.forRootAsync({
