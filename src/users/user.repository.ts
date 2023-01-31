@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { object } from 'joi';
 import {
   FilterQuery,
   Model,
@@ -30,16 +31,26 @@ export class UserRepository {
     }
   }
 
-  public async findOne(
-    filter: FilterQuery<User>,
-    includeOrExclude: string,
-  ): Promise<UserDocument> {
-    return this.user.findOne(filter).select(includeOrExclude);
+  public async findOne(filter: FilterQuery<User>): Promise<UserDocument> {
+    return this.user.findOne(filter);
   }
-  public async findById(
-    id: any,
-    includeOrExclude: string,
+  public async findOneAndSelect(
+    filter: FilterQuery<User>,
+    select: string | any,
   ): Promise<UserDocument> {
-    return this.user.findById(id).select(includeOrExclude);
+    return this.user.findOne(filter).select(select);
+  }
+
+  public async findById(id: any): Promise<UserDocument> {
+    return this.user.findById(id);
+  }
+  public async findByIdAndMatch(
+    id: any,
+    matcher: object,
+  ): Promise<UserDocument> {
+    return this.findOne({
+      _id: id,
+      ...matcher,
+    });
   }
 }

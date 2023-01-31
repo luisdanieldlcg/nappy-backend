@@ -30,12 +30,13 @@ export class AuthService {
   }
 
   public async login(dto: LoginDTO) {
-    const user = await this.userService.findByEmail(dto.email, '+password');
+    const { email, password } = dto;
+    const user = await this.userService.getByEmailAndSelect(email, '+password');
     if (!user) {
       throw new InvalidCredentialsException();
     }
     const didMatch = await checkHash({
-      raw: dto.password,
+      raw: password,
       hash: user.password,
     });
     if (!didMatch) {
@@ -48,6 +49,19 @@ export class AuthService {
       email: user.email,
       ...result,
     };
+  }
+
+  public async logout(userId: string) {
+    this.logger.error(userId);
+    // Only retrieve user data if refresh token is present
+    const authenticated = {
+      refreshToken: {
+        $ne: null,
+      },
+    };
+    const user = await this.userService.getByIdAndMatch(userId, authenticated);
+    user.refreshToken = undefined;
+    await user.save({ validateBeforeSave: false });
   }
 
   private async updateUserRefreshToken(user: User, refreshToken: string) {
