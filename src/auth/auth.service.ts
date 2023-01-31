@@ -5,7 +5,13 @@ import { SignupDTO } from './dtos/signup_dto';
 import { InvalidCredentialsException } from '../exceptions/invalid-credentials.exception';
 import { SettingsService } from 'src/settings/settings.service';
 import { JwtService } from '@nestjs/jwt';
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { tokenHashRounds } from 'src/constants';
 import { User } from 'src/users/schemas/user.schema';
 
@@ -19,22 +25,24 @@ export class AuthService {
   ) {}
 
   public async register(dto: SignupDTO) {
-    const user = await this.userService.createUser(dto);
-    const result = await this.signTokens(user._id);
-    await this.updateUserRefreshToken(user, result.refreshToken);
-    this.logger.log('User registered successfully');
+    // For some reason if we could not create the user
+    // it will throw an error
+    const user = await this.userService.create(dto);
+
+    const tokens = await this.processTokens(user);
     return {
       email: user.email,
-      ...result,
+      ...tokens,
     };
   }
 
   public async login(dto: LoginDTO) {
     const { email, password } = dto;
-    const user = await this.userService.getByEmailAndSelect(email, '+password');
+    const user = await this.userService.getByEmail(email, '+password');
     if (!user) {
       throw new InvalidCredentialsException();
     }
+    this.logger.log({ user });
     const didMatch = await checkHash({
       raw: password,
       hash: user.password,
@@ -42,34 +50,58 @@ export class AuthService {
     if (!didMatch) {
       throw new InvalidCredentialsException();
     }
-    const result = await this.signTokens(user._id);
-    await this.updateUserRefreshToken(user, result.refreshToken);
+    const tokens = await this.processTokens(user);
     this.logger.log('Signed in successfully');
     return {
       email: user.email,
-      ...result,
+      ...tokens,
     };
   }
 
   public async logout(userId: string) {
-    this.logger.error(userId);
     // Only retrieve user data if refresh token is present
     const authenticated = {
       refreshToken: {
         $ne: null,
       },
     };
-    const user = await this.userService.getByIdAndMatch(userId, authenticated);
+    const user = await this.userService.getById(userId, authenticated);
     user.refreshToken = undefined;
     await user.save({ validateBeforeSave: false });
   }
 
-  private async updateUserRefreshToken(user: User, refreshToken: string) {
-    user.refreshToken = await makeHash(refreshToken, tokenHashRounds);
-    await user.save({ validateBeforeSave: false });
+  public async rotateTokens(userId: string, activeRefreshToken: string) {
+    const user = await this.userService.getById(userId);
+    if (!user) {
+      throw new HttpException(
+        'The user belonging to this token was not found',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+    const didRefreshTokenMatch = await checkHash({
+      hash: user.refreshToken,
+      raw: activeRefreshToken,
+    });
+    if (!didRefreshTokenMatch) {
+      throw new HttpException('Access denied', HttpStatus.UNAUTHORIZED);
+    }
+    const tokens = await this.processTokens(user);
+    return tokens;
   }
 
-  private async signTokens(id: string): Promise<IAuthTokens> {
+  private async processTokens(user: User): Promise<IAuthTokens> {
+    const tokens = await this.genTokens(user._id);
+    user.refreshToken = await makeHash(tokens.refreshToken, tokenHashRounds);
+    await user.save({ validateBeforeSave: false });
+    return tokens;
+  }
+
+  /**
+   * Create refresh and access tokens
+   * @param id The user identifier of this token
+   * @returns An object containing both tokens.
+   */
+  private async genTokens(id: string): Promise<IAuthTokens> {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync({ id }, this.settings.jwtAccessToken()),
       this.jwtService.signAsync({ id }, this.settings.jwtRefreshToken()),

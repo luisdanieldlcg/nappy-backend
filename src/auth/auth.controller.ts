@@ -55,11 +55,8 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt-access'))
   @HttpCode(HttpStatus.OK)
   async logout(@Req() req: Request) {
-    const user = req.user;
-    // Example user: { id: '63d8529ae576b6c1f5125947', iat: 1675129144, exp: 1675215544 }
-    console.log({ user });
-
-    //    const logout = await this.authService.logout(token.token);
+    const refreshToken = req.user['id'] as string;
+    const logout = await this.authService.logout(refreshToken);
     return {};
   }
 

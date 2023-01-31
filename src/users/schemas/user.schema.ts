@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
-import { Option } from 'oxide.ts';
 import {
   emailRules,
   passwordConfirmRules,
