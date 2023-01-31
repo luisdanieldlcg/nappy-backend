@@ -5,15 +5,10 @@ import { SignupDTO } from './dtos/signup_dto';
 import { InvalidCredentialsException } from '../exceptions/invalid-credentials.exception';
 import { SettingsService } from 'src/settings/settings.service';
 import { JwtService } from '@nestjs/jwt';
-import {
-  ForbiddenException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { tokenHashRounds } from 'src/constants';
 import { User } from 'src/users/schemas/user.schema';
+import { IAuthTokens } from './interfaces';
 
 @Injectable()
 export class AuthService {
@@ -42,7 +37,6 @@ export class AuthService {
     if (!user) {
       throw new InvalidCredentialsException();
     }
-    this.logger.log({ user });
     const didMatch = await checkHash({
       raw: password,
       hash: user.password,
@@ -111,8 +105,4 @@ export class AuthService {
       refreshToken,
     };
   }
-}
-export interface IAuthTokens {
-  accessToken: string;
-  refreshToken: string;
 }

@@ -6,7 +6,10 @@ import morgan from 'morgan';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api/v1');
-  app.enableCors();
+  app.enableCors({
+    credentials: true,
+    origin: 'http://localhost:3000',
+  });
   app.useLogger(app.get(Logger));
   app.use(morgan('dev'));
   const configService = app.get(ConfigService);

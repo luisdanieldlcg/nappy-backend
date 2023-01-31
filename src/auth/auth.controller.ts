@@ -13,10 +13,13 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { IsNotEmpty } from 'class-validator';
 import { Request, Response } from 'express';
+import { JwtPayload } from 'src/decorators/jwt-payload.decorator';
 import { SettingsService } from 'src/settings/settings.service';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dtos/login_dto';
 import { SignupDTO } from './dtos/signup_dto';
+import { AccessGuard, RefreshGuard } from './guards';
+import { TokenPayload } from './interfaces';
 
 class LogoutDTO {
   @IsNotEmpty()
@@ -52,16 +55,21 @@ export class AuthController {
   }
 
   @Post('logout')
-  @UseGuards(AuthGuard('jwt-access'))
+  @UseGuards(AccessGuard)
   @HttpCode(HttpStatus.OK)
-  async logout(@Req() req: Request) {
-    const refreshToken = req.user['id'] as string;
-    const logout = await this.authService.logout(refreshToken);
+  async logout(
+    @JwtPayload() payload: TokenPayload,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    await this.authService.logout(payload.id);
+    res.clearCookie('jwt');
     return {};
   }
 
-  // @UseGuards(AuthGuard('jwt-refresh'))
-  // @Post('refresh')
-  // @HttpCode(HttpStatus.OK)
-  // async refreshTokens() {}
+  @Post('refresh')
+  @UseGuards(RefreshGuard)
+  @HttpCode(HttpStatus.OK)
+  async refreshTokens(@JwtPayload() payload: TokenPayload) {
+    return {};
+  }
 }
