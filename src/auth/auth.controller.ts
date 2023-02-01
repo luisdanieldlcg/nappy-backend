@@ -18,7 +18,7 @@ import { AuthService } from './auth.service';
 import { LoginDTO } from './dtos/login_dto';
 import { RefreshTokenDTO } from './dtos/refresh_token_dto';
 import { SignupDTO } from './dtos/signup_dto';
-import { AccessTokenDTO } from './dtos/verify_token.dto';
+import { VerifyAccessTokenDTO } from './dtos/verify_token.dto';
 import { AccessGuard, RefreshGuard } from './guards';
 import { IAuthTokens } from './interfaces';
 import { AccessTokenPayload } from './strategies/access.strategy';
@@ -66,7 +66,8 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     await this.authService.logout(input.id);
-    res.clearCookie('jwt');
+    res.clearCookie(jwtCookieConstants.accessTokenName);
+    res.clearCookie(jwtCookieConstants.refreshTokenName);
     return {};
   }
 
@@ -74,7 +75,7 @@ export class AuthController {
   @UseGuards(AccessGuard)
   @HttpCode(HttpStatus.OK)
   async verifyToken(
-    @TokenInput() input: AccessTokenDTO,
+    @TokenInput() input: VerifyAccessTokenDTO,
     @Res({ passthrough: true }) res: Response,
   ) {
     if (!input.expired) {

@@ -15,7 +15,6 @@ import {
 import { tokenHashRounds } from 'src/constants';
 import { User } from 'src/users/schemas/user.schema';
 import { IAuthTokens } from './interfaces';
-import { AccessTokenDTO } from './dtos/verify_token.dto';
 import { AccessTokenPayload } from './strategies/access.strategy';
 import { RefreshTokenDTO } from './dtos/refresh_token_dto';
 

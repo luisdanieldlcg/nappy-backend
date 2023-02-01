@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { Strategy } from 'passport-jwt';
 import { jwtCookieConstants } from 'src/constants';
-import { AccessTokenDTO } from '../dtos/verify_token.dto';
+import { VerifyAccessTokenDTO } from '../dtos/verify_token.dto';
 
 export type AccessTokenPayload = {
   id: string;
@@ -39,7 +39,7 @@ export class AccessStrategy extends PassportStrategy(
 
   validate(payload: AccessTokenPayload) {
     const didExpire = payload.exp <= Math.floor(Date.now() / 1000);
-    const dto: AccessTokenDTO = {
+    const dto: VerifyAccessTokenDTO = {
       exp: payload.exp,
       iat: payload.iat,
       id: payload.id,

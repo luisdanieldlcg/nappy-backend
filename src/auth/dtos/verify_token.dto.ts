@@ -1,4 +1,4 @@
-export type AccessTokenDTO = {
+export type VerifyAccessTokenDTO = {
   // Id of the user belonging to this token
   id: string;
   // Issued At

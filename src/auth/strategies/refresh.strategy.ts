@@ -13,7 +13,7 @@ export type RefreshTokenPayload = {
   exp: number;
 };
 
-const cookieExtractor = (req: Request) => {
+export const cookieExtractor = (req: Request) => {
   const cookies = req.cookies;
   if (!req || !cookies) {
     return undefined;
