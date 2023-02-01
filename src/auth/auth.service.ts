@@ -9,6 +9,7 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { tokenHashRounds } from 'src/constants';
 import { User } from 'src/users/schemas/user.schema';
 import { IAuthTokens } from './interfaces';
+import { RefreshTokenDTO } from './dtos/verify_token.dto';
 
 @Injectable()
 export class AuthService {
@@ -64,8 +65,8 @@ export class AuthService {
     await user.save({ validateBeforeSave: false });
   }
 
-  public async rotateTokens(userId: string, activeRefreshToken: string) {
-    const user = await this.userService.getById(userId);
+  public async verifyToken(dto: RefreshTokenDTO) {
+    const user = await this.userService.getById(dto.id);
     if (!user) {
       throw new HttpException(
         'The user belonging to this token was not found',
@@ -74,13 +75,14 @@ export class AuthService {
     }
     const didRefreshTokenMatch = await checkHash({
       hash: user.refreshToken,
-      raw: activeRefreshToken,
+      raw: dto.refreshToken,
     });
     if (!didRefreshTokenMatch) {
       throw new HttpException('Access denied', HttpStatus.UNAUTHORIZED);
     }
-    const tokens = await this.processTokens(user);
-    return tokens;
+    // const tokens = await this.processTokens(user);
+    // return tokens;
+    return {};
   }
 
   private async processTokens(user: User): Promise<IAuthTokens> {

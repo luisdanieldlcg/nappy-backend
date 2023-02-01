@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api/v1');
@@ -10,6 +11,7 @@ async function bootstrap() {
     credentials: true,
     origin: 'http://localhost:3000',
   });
+  app.use(cookieParser());
   app.useLogger(app.get(Logger));
   app.use(morgan('dev'));
   const configService = app.get(ConfigService);

@@ -4,27 +4,23 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Req,
   Res,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { IsNotEmpty } from 'class-validator';
-import { Request, Response } from 'express';
-import { JwtPayload } from 'src/decorators/jwt-payload.decorator';
+import { Response } from 'express';
+import { jwtCookieConstants } from 'src/constants';
+import { TokenInput } from 'src/decorators/jwt-payload.decorator';
 import { SettingsService } from 'src/settings/settings.service';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dtos/login_dto';
 import { SignupDTO } from './dtos/signup_dto';
+import { RefreshTokenDTO } from './dtos/verify_token.dto';
 import { AccessGuard, RefreshGuard } from './guards';
-import { TokenPayload } from './interfaces';
+import { IAuthTokens } from './interfaces';
 
-class LogoutDTO {
-  @IsNotEmpty()
-  readonly token: string;
-}
 @Controller('auth')
 @UsePipes(ValidationPipe)
 export class AuthController {
@@ -40,7 +36,10 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const response = await this.authService.login(input);
-    res.cookie('jwt', response.accessToken, this.settings.jwtCookie());
+    this.setJwtCookies(res, {
+      accessToken: response.accessToken,
+      refreshToken: response.refreshToken,
+    });
     return response;
   }
 
@@ -50,7 +49,10 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const response = await this.authService.register(input);
-    res.cookie('jwt', response.accessToken, this.settings.jwtCookie());
+    this.setJwtCookies(res, {
+      accessToken: response.accessToken,
+      refreshToken: response.refreshToken,
+    });
     return response;
   }
 
@@ -58,18 +60,32 @@ export class AuthController {
   @UseGuards(AccessGuard)
   @HttpCode(HttpStatus.OK)
   async logout(
-    @JwtPayload() payload: TokenPayload,
+    @TokenInput() input: RefreshTokenDTO,
     @Res({ passthrough: true }) res: Response,
   ) {
-    await this.authService.logout(payload.id);
+    await this.authService.logout(input.id);
     res.clearCookie('jwt');
     return {};
   }
 
-  @Post('refresh')
+  @Post('verify-token')
   @UseGuards(RefreshGuard)
   @HttpCode(HttpStatus.OK)
-  async refreshTokens(@JwtPayload() payload: TokenPayload) {
-    return {};
+  async verifyToken(@TokenInput() input: RefreshTokenDTO) {
+    const res = await this.authService.verifyToken(input);
+    return res;
+  }
+
+  private setJwtCookies(res: Response, tokens: IAuthTokens) {
+    res.cookie(
+      jwtCookieConstants.accessTokenName,
+      tokens.accessToken,
+      this.settings.jwtCookie(),
+    );
+    res.cookie(
+      jwtCookieConstants.refreshTokenName,
+      tokens.refreshToken,
+      this.settings.jwtCookie(),
+    );
   }
 }
