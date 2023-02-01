@@ -5,21 +5,23 @@ import {
   HttpStatus,
   Post,
   Res,
+  UnauthorizedException,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { IsNotEmpty } from 'class-validator';
 import { Response } from 'express';
 import { jwtCookieConstants } from 'src/constants';
 import { TokenInput } from 'src/decorators/jwt-payload.decorator';
 import { SettingsService } from 'src/settings/settings.service';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dtos/login_dto';
+import { RefreshTokenDTO } from './dtos/refresh_token_dto';
 import { SignupDTO } from './dtos/signup_dto';
-import { RefreshTokenDTO } from './dtos/verify_token.dto';
+import { AccessTokenDTO } from './dtos/verify_token.dto';
 import { AccessGuard, RefreshGuard } from './guards';
 import { IAuthTokens } from './interfaces';
+import { AccessTokenPayload } from './strategies/access.strategy';
 
 @Controller('auth')
 @UsePipes(ValidationPipe)
@@ -60,7 +62,7 @@ export class AuthController {
   @UseGuards(AccessGuard)
   @HttpCode(HttpStatus.OK)
   async logout(
-    @TokenInput() input: RefreshTokenDTO,
+    @TokenInput() input: AccessTokenPayload,
     @Res({ passthrough: true }) res: Response,
   ) {
     await this.authService.logout(input.id);
@@ -69,11 +71,40 @@ export class AuthController {
   }
 
   @Post('verify-token')
-  @UseGuards(RefreshGuard)
+  @UseGuards(AccessGuard)
   @HttpCode(HttpStatus.OK)
-  async verifyToken(@TokenInput() input: RefreshTokenDTO) {
-    const res = await this.authService.verifyToken(input);
-    return res;
+  async verifyToken(
+    @TokenInput() input: AccessTokenDTO,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    if (!input.expired) {
+      await this.authService.verifyAccessToken(input);
+      return {};
+    } else {
+      return res.redirect(
+        HttpStatus.TEMPORARY_REDIRECT,
+        '/api/v1/auth/refresh-token',
+      );
+    }
+  }
+
+  @Post('refresh-token')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(RefreshGuard)
+  async refreshToken(
+    @TokenInput() input: RefreshTokenDTO,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const tokens = await this.authService.refreshToken(input);
+    if (!tokens) {
+      throw new UnauthorizedException('Access denied. Please log in again');
+    }
+    res.cookie(
+      jwtCookieConstants.accessTokenName,
+      tokens.accessToken,
+      this.settings.jwtCookie(),
+    );
+    return tokens;
   }
 
   private setJwtCookies(res: Response, tokens: IAuthTokens) {

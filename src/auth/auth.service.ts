@@ -5,11 +5,19 @@ import { SignupDTO } from './dtos/signup_dto';
 import { InvalidCredentialsException } from '../exceptions/invalid-credentials.exception';
 import { SettingsService } from 'src/settings/settings.service';
 import { JwtService } from '@nestjs/jwt';
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { tokenHashRounds } from 'src/constants';
 import { User } from 'src/users/schemas/user.schema';
 import { IAuthTokens } from './interfaces';
-import { RefreshTokenDTO } from './dtos/verify_token.dto';
+import { AccessTokenDTO } from './dtos/verify_token.dto';
+import { AccessTokenPayload } from './strategies/access.strategy';
+import { RefreshTokenDTO } from './dtos/refresh_token_dto';
 
 @Injectable()
 export class AuthService {
@@ -65,7 +73,25 @@ export class AuthService {
     await user.save({ validateBeforeSave: false });
   }
 
-  public async verifyToken(dto: RefreshTokenDTO) {
+  /**
+   * Further processing to Verify that the access token
+   * sent by the client is still valid. The token payload
+   * passed in is assumed to be a valid token.
+   * @param dto
+   */
+  public async verifyAccessToken(dto: AccessTokenPayload) {
+    const user = await this.userService.getById(dto.id);
+    // Check if the user still exists
+    if (!user) {
+      throw new HttpException(
+        'The user belonging to this token was not found',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+    return {};
+    // TODO: Check if user changed password after the token was issued
+  }
+  public async refreshToken(dto: RefreshTokenDTO) {
     const user = await this.userService.getById(dto.id);
     if (!user) {
       throw new HttpException(
@@ -74,15 +100,14 @@ export class AuthService {
       );
     }
     const didRefreshTokenMatch = await checkHash({
+      raw: dto.token,
       hash: user.refreshToken,
-      raw: dto.refreshToken,
     });
     if (!didRefreshTokenMatch) {
-      throw new HttpException('Access denied', HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException('Access denied. Please log in again.');
     }
-    // const tokens = await this.processTokens(user);
-    // return tokens;
-    return {};
+    const tokens = await this.processTokens(user);
+    return tokens;
   }
 
   private async processTokens(user: User): Promise<IAuthTokens> {
