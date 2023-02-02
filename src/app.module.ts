@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { AppController } from './app.controller.js';
-import { AuthModule } from './features/auth/auth.module.js';
+import { AuthModule } from './modules/auth/auth.module.js';
 import databaseConfig from './config/main.config.js';
 import { ENV_FILES } from './config/env_files.js';
 import Joi from 'joi';
@@ -9,6 +9,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { LoggerModule } from 'nestjs-pino';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './common/exceptions/filters/all-exceptions.filter.js';
+import { CardsModule } from './modules/cards/cards.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { AllExceptionsFilter } from './common/exceptions/filters/all-exceptions.
       inject: [databaseConfig.KEY],
     }),
     AuthModule,
+    CardsModule,
   ],
   controllers: [AppController],
   providers: [

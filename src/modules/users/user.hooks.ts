@@ -1,6 +1,6 @@
 import { passwordHashRounds } from 'src/common/constants';
 import { makeHash } from 'src/common/utils/bcrypt';
-import { UserSchema } from './schemas/user.schema';
+import { UserSchema } from './schema';
 
 async function handlePasswordHash(next) {
   if (!this.isModified('password')) {
@@ -15,7 +15,7 @@ async function handlePasswordHash(next) {
   return next();
 }
 
-export const addAllHooks = () => {
+export const userHooksFactory = () => {
   const schema = UserSchema;
   schema.pre('save', handlePasswordHash);
   return schema;

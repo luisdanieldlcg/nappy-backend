@@ -1,4 +1,4 @@
-import { UserService } from 'src/features/users/user.service';
+import { UserService } from 'src/modules/users/user.service';
 import { checkHash, makeHash } from 'src/common/utils/bcrypt';
 import { LoginDTO } from './dtos/login_dto';
 import { SignupDTO } from './dtos/signup_dto';
@@ -13,7 +13,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { tokenHashRounds } from 'src/common/constants';
-import { User } from 'src/features/users/schemas/user.schema';
+import { User } from 'src/modules/users/schema';
 import { IAuthTokens } from './interfaces';
 import { AccessTokenPayload } from './strategies/access.strategy';
 import { RefreshTokenDTO } from './dtos/refresh_token_dto';

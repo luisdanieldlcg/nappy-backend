@@ -1,23 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
-import {
-  emailRules,
-  passwordConfirmRules,
-  passwordRules,
-  refreshTokenRules,
-} from '../user.validations';
+import * as userSchemaRules from './rules';
 
 export type UserDocument = User & Document;
 
 @Schema({ timestamps: true })
 export class User extends mongoose.Document {
-  @Prop(emailRules)
+  @Prop(userSchemaRules.emailRules)
   email: string;
-  @Prop(passwordRules)
+  @Prop(userSchemaRules.passwordRules)
   password: string;
-  @Prop(passwordConfirmRules)
+  @Prop(userSchemaRules.passwordConfirmRules)
   passwordConfirm: string;
-  @Prop(refreshTokenRules)
+  @Prop(userSchemaRules.refreshTokenRules)
   refreshToken: string;
 }
 

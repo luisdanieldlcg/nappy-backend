@@ -1,23 +1,21 @@
-import { PropOptions } from '@nestjs/mongoose';
 import { minRequiredPasswordLength } from 'src/common/constants';
-import { User } from './schemas/user.schema';
+import { SchemaRule } from 'src/common/types';
+import { User } from '.';
 
-type Validation = PropOptions<any>;
-
-export const emailRules: Validation = {
+export const emailRules: SchemaRule = {
   type: String,
   required: [true, "'email' is missing."],
   unique: true,
   lowercase: true,
 };
-export const passwordRules: Validation = {
+export const passwordRules: SchemaRule = {
   type: String,
   required: [true, "'password' is missing."],
   minlength: minRequiredPasswordLength,
   select: false,
 };
 
-export const passwordConfirmRules: Validation = {
+export const passwordConfirmRules: SchemaRule = {
   type: String,
   required: [true, "'passwordConfirm' is missing."],
   minlength: minRequiredPasswordLength,
@@ -29,7 +27,7 @@ export const passwordConfirmRules: Validation = {
   },
 };
 
-export const refreshTokenRules: Validation = {
+export const refreshTokenRules: SchemaRule = {
   type: String,
   required: false,
   default: undefined,

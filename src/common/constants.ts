@@ -6,3 +6,10 @@ export const jwtCookieConstants = {
   refreshTokenName: 'jwt-refresh',
   accessTokenName: 'jwt-access',
 };
+
+export const databaseConstants = {
+  modelNames: {
+    user: 'User',
+    card: 'Card',
+  },
+};
