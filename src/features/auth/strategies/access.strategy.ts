@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { Strategy } from 'passport-jwt';
-import { jwtCookieConstants } from 'src/constants';
+import { jwtCookieConstants } from 'src/common/constants';
 import { VerifyAccessTokenDTO } from '../dtos/verify_token.dto';
 
 export type AccessTokenPayload = {

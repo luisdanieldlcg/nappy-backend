@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { SignupDTO } from 'src/auth/dtos/signup_dto';
+import { SignupDTO } from 'src/features/auth/dtos/signup_dto';
 import { User, UserDocument } from './schemas/user.schema';
 import { UserRepository } from './user.repository';
 

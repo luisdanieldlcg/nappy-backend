@@ -1,5 +1,5 @@
 import { AuthGuard } from '@nestjs/passport';
-import { jwtCookieConstants } from 'src/constants';
+import { jwtCookieConstants } from 'src/common/constants';
 
 export class AccessGuard extends AuthGuard(jwtCookieConstants.accessTokenName) {
   constructor() {

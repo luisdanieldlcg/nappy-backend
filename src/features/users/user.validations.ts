@@ -1,5 +1,5 @@
 import { PropOptions } from '@nestjs/mongoose';
-import { minRequiredPasswordLength } from 'src/constants';
+import { minRequiredPasswordLength } from 'src/common/constants';
 import { User } from './schemas/user.schema';
 
 type Validation = PropOptions<any>;

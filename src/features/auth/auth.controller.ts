@@ -11,9 +11,9 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { jwtCookieConstants } from 'src/constants';
-import { TokenInput } from 'src/decorators/jwt-payload.decorator';
-import { SettingsService } from 'src/settings/settings.service';
+import { jwtCookieConstants } from 'src/common/constants';
+import { TokenInput } from 'src/common/decorators/jwt-payload.decorator';
+import { SettingsService } from 'src/common/settings/settings.service';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dtos/login_dto';
 import { RefreshTokenDTO } from './dtos/refresh_token_dto';

@@ -1,9 +1,9 @@
-import { UserService } from 'src/users/user.service';
-import { checkHash, makeHash } from 'src/utils/bcrypt';
+import { UserService } from 'src/features/users/user.service';
+import { checkHash, makeHash } from 'src/common/utils/bcrypt';
 import { LoginDTO } from './dtos/login_dto';
 import { SignupDTO } from './dtos/signup_dto';
-import { InvalidCredentialsException } from '../exceptions/invalid-credentials.exception';
-import { SettingsService } from 'src/settings/settings.service';
+import { InvalidCredentialsException } from '../../common/exceptions/invalid-credentials.exception';
+import { SettingsService } from 'src/common/settings/settings.service';
 import { JwtService } from '@nestjs/jwt';
 import {
   HttpException,
@@ -12,8 +12,8 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { tokenHashRounds } from 'src/constants';
-import { User } from 'src/users/schemas/user.schema';
+import { tokenHashRounds } from 'src/common/constants';
+import { User } from 'src/features/users/schemas/user.schema';
 import { IAuthTokens } from './interfaces';
 import { AccessTokenPayload } from './strategies/access.strategy';
 import { RefreshTokenDTO } from './dtos/refresh_token_dto';

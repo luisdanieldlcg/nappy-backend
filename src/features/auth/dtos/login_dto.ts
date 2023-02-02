@@ -1,5 +1,5 @@
 import { IsEmail, MinLength } from 'class-validator';
-import { minRequiredPasswordLength } from 'src/constants';
+import { minRequiredPasswordLength } from 'src/common/constants';
 
 export class LoginDTO {
   @IsEmail(

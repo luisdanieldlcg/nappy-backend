@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { AppController } from './app.controller.js';
-import { AuthModule } from './auth/auth.module.js';
+import { AuthModule } from './features/auth/auth.module.js';
 import databaseConfig from './config/main.config.js';
 import { ENV_FILES } from './config/env_files.js';
 import Joi from 'joi';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LoggerModule } from 'nestjs-pino';
 import { APP_FILTER } from '@nestjs/core';
-import { AllExceptionsFilter } from './exceptions/filters/all-exceptions.filter.js';
+import { AllExceptionsFilter } from './common/exceptions/filters/all-exceptions.filter.js';
 
 @Module({
   imports: [

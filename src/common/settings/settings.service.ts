@@ -3,7 +3,7 @@ import { ConfigType } from '@nestjs/config';
 import { JwtSignOptions } from '@nestjs/jwt';
 import { CookieOptions } from 'express';
 import mainConfig from 'src/config/main.config';
-import { daysInMillis } from 'src/utils/time-helper';
+import { daysInMillis } from 'src/common/utils/time-helper';
 
 @Injectable()
 export class SettingsService {

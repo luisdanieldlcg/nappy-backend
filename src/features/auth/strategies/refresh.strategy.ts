@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { Strategy } from 'passport-jwt';
-import { jwtCookieConstants } from 'src/constants';
+import { jwtCookieConstants } from 'src/common/constants';
 import { RefreshTokenDTO } from '../dtos/refresh_token_dto';
 
 export type RefreshTokenPayload = {

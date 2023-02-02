@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
-import { minRequiredPasswordLength } from 'src/constants';
-import { Match } from 'src/decorators/match.decorator';
+import { minRequiredPasswordLength } from 'src/common/constants';
+import { Match } from 'src/common/decorators/match.decorator';
 
 export class SignupDTO {
   @IsNotEmpty()

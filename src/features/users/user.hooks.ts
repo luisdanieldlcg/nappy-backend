@@ -1,5 +1,5 @@
-import { passwordHashRounds } from 'src/constants';
-import { makeHash } from 'src/utils/bcrypt';
+import { passwordHashRounds } from 'src/common/constants';
+import { makeHash } from 'src/common/utils/bcrypt';
 import { UserSchema } from './schemas/user.schema';
 
 async function handlePasswordHash(next) {
