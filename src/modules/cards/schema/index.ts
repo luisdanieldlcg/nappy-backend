@@ -12,6 +12,12 @@ export class Card extends mongoose.Document {
   firstName: string;
   @Prop(cardSchemaRules.lastNameRules)
   lastName: string;
+  @Prop(cardSchemaRules.jobTitleRules)
+  jobTitle: string;
+  @Prop(cardSchemaRules.companyRules)
+  company: string;
+  @Prop(cardSchemaRules.userRules)
+  user: mongoose.Types.ObjectId;
 }
 
 export const CardSchema = SchemaFactory.createForClass(Card);

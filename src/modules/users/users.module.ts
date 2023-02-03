@@ -4,6 +4,7 @@ import { databaseConstants } from 'src/common/constants';
 import { userHooksFactory } from './user.hooks';
 import { UserRepository } from './user.repository';
 import { UserService } from './user.service';
+import { UsersController } from './users.controller';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UserService } from './user.service';
     ]),
   ],
   providers: [UserService, UserRepository],
+  controllers: [UsersController],
   exports: [UserService],
 })
 export class UsersModule {}

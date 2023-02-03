@@ -7,4 +7,6 @@ export class CreateCardDTO {
   @IsNotEmpty()
   firstName: string;
   lastName: string;
+
+  user: string;
 }

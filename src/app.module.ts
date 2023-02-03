@@ -10,6 +10,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './common/exceptions/filters/all-exceptions.filter.js';
 import { CardsModule } from './modules/cards/cards.module';
+import { UsersModule } from './modules/users/users.module.js';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { CardsModule } from './modules/cards/cards.module';
       inject: [databaseConfig.KEY],
     }),
     AuthModule,
+    UsersModule,
     CardsModule,
   ],
   controllers: [AppController],

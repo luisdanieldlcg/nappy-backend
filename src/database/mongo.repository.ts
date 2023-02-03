@@ -19,8 +19,11 @@ export abstract class MongoRepository<T extends Document> {
   public async getById(id: any, proj?: Record<string, any>): Result<T> {
     return this.repository.findById(id, proj).exec();
   }
-  public async getAll(filter: FilterQuery<T>): Result<T[]> {
-    return this.repository.find(filter).exec();
+  public async getAll(
+    filter: FilterQuery<T>,
+    proj?: Record<string, any>,
+  ): Result<T[]> {
+    return this.repository.find(filter, proj).exec();
   }
 
   /**

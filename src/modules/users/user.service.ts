@@ -15,6 +15,10 @@ export class UserService {
     return this.userRepository.get({ email }, proj);
   }
 
+  public async getAllUsers(proj?: Record<string, any>) {
+    return this.userRepository.getAll({}, proj);
+  }
+
   public async getById(id: string, matcher?: object): Promise<User> {
     const user = await this.userRepository.getById(id, matcher);
     if (!user) {
