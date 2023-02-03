@@ -1,28 +1,33 @@
-import { FilterQuery, Model, ProjectionType } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 
 type Result<T> = Promise<T | null>;
 
-class MongoRepository<T extends Document> {
+export abstract class MongoRepository<T extends Document> {
   constructor(
     protected readonly repository: Model<T>,
     protected readonly populateOnFind: string[] = [],
   ) {}
 
-  async get(
+  public async get(
     filter: FilterQuery<T>,
     proj?: Record<string, any>,
-  ): Promise<T | null> {
+  ): Result<T> {
     const options = { ...proj };
     return this.repository.findOne(filter, options).exec();
   }
-  getAll(filter: FilterQuery<T>): Promise<T[] | null> {
+
+  public async getById(id: any, proj?: Record<string, any>): Result<T> {
+    return this.repository.findById(id, proj).exec();
+  }
+  public async getAll(filter: FilterQuery<T>): Result<T[]> {
     return this.repository.find(filter).exec();
   }
-  create(item: T): Promise<T | null> {
-    return this.repository.create(item);
-  }
 
-  update(id: string, item: T): void {
-    throw new Error('Method not implemented.');
+  /**
+   * Create a new entity.
+   * @returns Either the new Entity or a server error
+   */
+  public async create(item: T): Result<T> {
+    return this.repository.create(item);
   }
 }

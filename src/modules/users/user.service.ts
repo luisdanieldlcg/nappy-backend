@@ -10,13 +10,13 @@ export class UserService {
 
   public async getByEmail(
     email: string,
-    includeOrExclude?: string,
+    proj?: Record<string, any>,
   ): Promise<UserDocument> {
-    return this.userRepository.findOne({ email }, includeOrExclude);
+    return this.userRepository.get({ email }, proj);
   }
 
   public async getById(id: string, matcher?: object): Promise<User> {
-    const user = await this.userRepository.findById(id, matcher);
+    const user = await this.userRepository.getById(id, matcher);
     if (!user) {
       this.logger.log('User not found');
     }
@@ -30,11 +30,12 @@ export class UserService {
    * @returns Either the new User or a server error
    */
   public async create(dto: SignupDTO): Promise<User | null> {
-    const user = await this.userRepository.create({
+    const model = new this.userRepository.userModel({
       email: dto.email,
       password: dto.password,
       passwordConfirm: dto.passwordConfirm,
     });
+    const user = await this.userRepository.create(model);
     return user;
   }
 }

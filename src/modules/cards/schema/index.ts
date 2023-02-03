@@ -8,6 +8,10 @@ export type CardDocument = Card & Document;
 export class Card extends mongoose.Document {
   @Prop(cardSchemaRules.nameRules)
   name: string;
+  @Prop(cardSchemaRules.firstNameRules)
+  firstName: string;
+  @Prop(cardSchemaRules.lastNameRules)
+  lastName: string;
 }
 
 export const CardSchema = SchemaFactory.createForClass(Card);
