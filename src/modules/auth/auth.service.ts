@@ -62,12 +62,8 @@ export class AuthService {
 
   public async logout(userId: string) {
     // Only retrieve user data if refresh token is present
-    const authenticated = {
-      refreshToken: {
-        $ne: null,
-      },
-    };
-    const user = await this.userService.getById(userId, authenticated);
+    // TODO filter for refresh token != null
+    const user = await this.userService.getById(userId);
     user.refreshToken = undefined;
     await user.save({ validateBeforeSave: false });
   }

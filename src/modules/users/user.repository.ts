@@ -23,10 +23,6 @@ export class UserRepository extends MongoRepository<UserDocument> {
   }
 
   public getById(id: any, proj?: Record<string, any>): Promise<UserDocument> {
-    const defaultProjection = {
-      ...UserProjections.default,
-      ...proj,
-    };
-    return super.getById(id, defaultProjection);
+    return super.getById(id, proj);
   }
 }
