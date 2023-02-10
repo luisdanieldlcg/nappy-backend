@@ -41,7 +41,7 @@ export class AuthService {
 
   public async login(dto: LoginDTO) {
     const { email, password } = dto;
-    const user = await this.userService.getByEmail(email, { password: 1 });
+    const user = await this.userService.findByEmail(email);
     if (!user) {
       throw new InvalidCredentialsException();
     }
@@ -63,7 +63,7 @@ export class AuthService {
   public async logout(userId: string) {
     // Only retrieve user data if refresh token is present
     // TODO filter for refresh token != null
-    const user = await this.userService.getById(userId);
+    const user = await this.userService.find(userId);
     user.refreshToken = undefined;
     await user.save({ validateBeforeSave: false });
   }
@@ -75,7 +75,7 @@ export class AuthService {
    * @param dto
    */
   public async verifyAccessToken(dto: AccessTokenPayload) {
-    const user = await this.userService.getById(dto.id);
+    const user = await this.userService.find(dto.id);
     // Check if the user still exists
     if (!user) {
       throw new HttpException(
@@ -87,7 +87,7 @@ export class AuthService {
     // TODO: Check if user changed password after the token was issued
   }
   public async refreshToken(dto: RefreshTokenDTO) {
-    const user = await this.userService.getById(dto.id);
+    const user = await this.userService.find(dto.id);
     if (!user) {
       throw new HttpException(
         'The user belonging to this token was not found',

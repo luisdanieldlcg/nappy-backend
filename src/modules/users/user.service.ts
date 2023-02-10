@@ -1,45 +1,29 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { IUserRepository } from 'src/database/user.repository';
 import { SignupDTO } from 'src/modules/auth/dtos/signup_dto';
-import { User, UserDocument } from './schema';
-import { UserRepository } from './user.repository';
+import { User } from './schema';
 
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
-  constructor(private readonly userRepository: UserRepository) {}
 
-  public async getByEmail(
-    email: string,
-    proj?: Record<string, any>,
-  ): Promise<UserDocument> {
-    return this.userRepository.get({ email }, proj);
-  }
+  constructor(private readonly userRepository: IUserRepository) {}
 
-  public async getAllUsers(proj?: Record<string, any>) {
-    return this.userRepository.getAll({}, proj);
-  }
-
-  public async getById(id: string, matcher?: object): Promise<User> {
-    const user = await this.userRepository.getById(id, matcher);
-    if (!user) {
-      this.logger.log('User not found');
-    }
-    return user;
-  }
-
-  /**
-   *
-   * Create a new User with email and password. Stable
-   * @param dto Email Password and Password Confirm required.
-   * @returns Either the new User or a server error
-   */
   public async create(dto: SignupDTO): Promise<User | null> {
-    const model = new this.userRepository.userModel({
-      email: dto.email,
-      password: dto.password,
-      passwordConfirm: dto.passwordConfirm,
-    });
-    const user = await this.userRepository.create(model);
+    const result = await this.userRepository.create(dto);
+    const user = result.unwrap();
     return user;
+  }
+  public async find(id: string): Promise<User> {
+    const result = await this.userRepository.find(id);
+    return result.unwrap();
+  }
+  public async findByEmail(email: string): Promise<User | null> {
+    const result = await this.userRepository.findByEmail(email);
+    return result.unwrap();
+  }
+  public async findAll(): Promise<User[]> {
+    const result = await this.userRepository.findAll();
+    return result.unwrap();
   }
 }

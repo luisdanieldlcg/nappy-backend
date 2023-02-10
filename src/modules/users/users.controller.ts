@@ -8,7 +8,7 @@ export class UsersController {
 
   @Get()
   public async getAllUsers() {
-    const users = await this.userService.getAllUsers();
+    const users = await this.userService.findAll();
     return {
       users,
     };
@@ -16,7 +16,7 @@ export class UsersController {
 
   @Get(':id')
   public async getUserById(@Param() params: GetUserParams) {
-    const user = await this.userService.getById(params.id);
+    const user = await this.userService.find(params.id);
     return {
       user,
     };

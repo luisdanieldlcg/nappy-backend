@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { databaseConstants } from 'src/common/constants';
+import { IUserRepository } from 'src/database/user.repository';
 import { userHooksFactory } from './user.hooks';
-import { UserRepository } from './user.repository';
+import { UserRepositoryImpl } from './user.repository';
 import { UserService } from './user.service';
 import { UsersController } from './users.controller';
 
@@ -15,7 +16,14 @@ import { UsersController } from './users.controller';
       },
     ]),
   ],
-  providers: [UserService, UserRepository],
+  providers: [
+    UserService,
+    {
+      provide: IUserRepository,
+      useClass: UserRepositoryImpl,
+    },
+  ],
+
   controllers: [UsersController],
   exports: [UserService],
 })

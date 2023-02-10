@@ -1,28 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { User, UserDocument } from './schema';
-import { MongoRepository } from 'src/database/mongo.repository';
-import { UserProjections } from 'src/config/projection.config';
+import { MongoDBRepository } from 'src/database/repository';
+import { IUserRepository } from 'src/database/user.repository';
+import { RepositoryResult } from 'src/common/types';
+import { UserDTO } from './dto/user.dto';
 
 @Injectable()
-export class UserRepository extends MongoRepository<UserDocument> {
-  constructor(@InjectModel(User.name) readonly userModel: Model<UserDocument>) {
-    super(userModel);
-  }
-
-  public getAll(
-    filter: FilterQuery<UserDocument>,
-    proj?: Record<string, any>,
-  ): Promise<UserDocument[]> {
-    const defaultProjection = {
-      ...UserProjections.default,
-      ...proj,
+export class UserRepositoryImpl
+  extends MongoDBRepository<UserDocument, UserDTO>
+  implements IUserRepository
+{
+  toDTO(entity: UserDocument): UserDTO {
+    return {
+      email: entity.email,
+      accessToken: '',
+      refreshToken: entity.refreshToken,
     };
-    return super.getAll(filter, defaultProjection);
   }
 
-  public getById(id: any, proj?: Record<string, any>): Promise<UserDocument> {
-    return super.getById(id, proj);
+  constructor(@InjectModel(User.name) private readonly _: Model<UserDocument>) {
+    super(_);
+  }
+  async findByEmail(email: string): RepositoryResult<UserDocument> {
+    return await this.findOne({ email });
   }
 }

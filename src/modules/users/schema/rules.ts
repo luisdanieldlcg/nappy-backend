@@ -12,7 +12,7 @@ export const passwordRules: SchemaRule = {
   type: String,
   required: [true, "'password' is missing."],
   minlength: minRequiredPasswordLength,
-  select: false,
+  // select: false,
 };
 
 export const passwordConfirmRules: SchemaRule = {
