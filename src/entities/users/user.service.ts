@@ -15,11 +15,15 @@ export class UserService {
     return user;
   }
   public async find(id: string): Promise<User> {
-    const result = await this.userRepository.find(id);
+    const result = await this.userRepository.find(id, '+password');
     return result.unwrap();
   }
   public async findByEmail(email: string): Promise<User | null> {
     const result = await this.userRepository.findByEmail(email);
+    return result.unwrap();
+  }
+  public async findByEmailWithPassword(email: string): Promise<User> {
+    const result = await this.userRepository.findByEmail(email, '+password');
     return result.unwrap();
   }
   public async findAll(): Promise<User[]> {

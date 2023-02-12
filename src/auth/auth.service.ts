@@ -16,7 +16,7 @@ import { User } from 'src/entities/users/schema';
 import { AccessTokenPayload } from './strategies/access.strategy';
 import { LocalSignInDTO, LocalSignupDTO, RefreshTokenDTO } from './dtos';
 import { Tokens } from './dtos/auth.token.dtos';
-
+// TODO: handle user not found exception properly
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
@@ -27,10 +27,7 @@ export class AuthService {
   ) {}
 
   public async register(dto: LocalSignupDTO) {
-    // For some reason if we could not create the user
-    // it will throw an error
     const user = await this.userService.create(dto);
-
     const tokens = await this.processTokens(user);
     return {
       email: user.email,
@@ -39,13 +36,12 @@ export class AuthService {
   }
 
   public async login(dto: LocalSignInDTO) {
-    const { email, password } = dto;
-    const user = await this.userService.findByEmail(email);
+    const user = await this.userService.findByEmailWithPassword(dto.email);
     if (!user) {
       throw new InvalidCredentialsException();
     }
     const didMatch = await checkHash({
-      raw: password,
+      raw: dto.password,
       hash: user.password,
     });
     if (!didMatch) {

@@ -1,10 +1,9 @@
-import { Result } from 'oxide.ts/dist';
-import { RepositoryError } from 'src/common/errors/repository.error';
+import { ProjectionType } from 'mongoose';
+import { Future } from 'src/common/types';
 import { UserDocument } from 'src/entities/users/schema';
 import { IMongoDBRepository } from './repository';
 
-export abstract class IUserRepository extends IMongoDBRepository<UserDocument> {
-  abstract findByEmail(
-    email: string,
-  ): Promise<Result<UserDocument, RepositoryError>>;
+type T = UserDocument;
+export abstract class IUserRepository extends IMongoDBRepository<T> {
+  abstract findByEmail(email: string, proj?: ProjectionType<T>): Future<T>;
 }
