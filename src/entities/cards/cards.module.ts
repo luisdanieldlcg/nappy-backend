@@ -12,7 +12,7 @@ import { CardsService } from './cards.service';
   imports: [
     MongooseModule.forFeatureAsync([
       {
-        name: databaseConstants.modelNames.card,
+        name: databaseConstants.card.name,
         useFactory: cardsHooksFactory,
       },
     ]),

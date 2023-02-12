@@ -10,5 +10,7 @@ export class CreateCardDTO {
   @IsNotEmpty()
   firstName: string;
   lastName: string;
+  jobTitle: string;
+  company: string;
   user: string;
 }

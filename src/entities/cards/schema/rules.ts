@@ -23,6 +23,6 @@ export const companyRules = textNotRequired;
 
 export const userRules = {
   type: mongoose.Schema.Types.ObjectId,
-  ref: databaseConstants.modelNames.user,
+  ref: databaseConstants.user.name,
   required: [true, 'Card must belong to an user.'],
 };

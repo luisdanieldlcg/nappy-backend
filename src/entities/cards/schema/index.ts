@@ -17,7 +17,7 @@ export class Card extends mongoose.Document {
   @Prop(cardSchemaRules.companyRules)
   company: string;
   @Prop(cardSchemaRules.userRules)
-  user: mongoose.Types.ObjectId;
+  user: mongoose.Schema.Types.ObjectId;
 }
 
 export const CardSchema = SchemaFactory.createForClass(Card);

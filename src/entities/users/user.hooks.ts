@@ -1,5 +1,6 @@
-import { passwordHashRounds } from 'src/common/constants';
+import { databaseConstants, passwordHashRounds } from 'src/common/constants';
 import { makeHash } from 'src/common/utils/bcrypt';
+import { Card } from '../cards/schema';
 import { UserSchema } from './schema';
 
 async function handlePasswordHash(next) {
@@ -17,6 +18,16 @@ async function handlePasswordHash(next) {
 
 export const userHooksFactory = () => {
   const schema = UserSchema;
+  // Virtual Populate
+  schema.virtual(databaseConstants.user.virtualFields.cardsPath, {
+    ref: Card.name,
+    // Card field that stores the user id
+    foreignField: 'user',
+    // Field local to this model that stores the user id
+    localField: '_id',
+  });
+
   schema.pre('save', handlePasswordHash);
+
   return schema;
 };

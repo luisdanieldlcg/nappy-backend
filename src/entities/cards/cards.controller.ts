@@ -1,4 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { CardsService } from './cards.service';
 import { CreateCardDTO } from './dtos';
 
@@ -7,8 +14,15 @@ export class CardsController {
   constructor(private readonly cardsService: CardsService) {}
 
   @Post()
-  async create(@Body() input: CreateCardDTO) {
-    await this.cardsService.create(input);
-    return {};
+  @HttpCode(HttpStatus.CREATED)
+  public async create(@Body() input: CreateCardDTO) {
+    const response = await this.cardsService.create(input);
+    return response;
+  }
+
+  @Get()
+  public async findAll() {
+    const response = await this.cardsService.findAll();
+    return response;
   }
 }

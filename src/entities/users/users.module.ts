@@ -11,7 +11,7 @@ import { UsersController } from './users.controller';
   imports: [
     MongooseModule.forFeatureAsync([
       {
-        name: databaseConstants.modelNames.user,
+        name: databaseConstants.user.name,
         useFactory: userHooksFactory,
       },
     ]),

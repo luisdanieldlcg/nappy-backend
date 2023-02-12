@@ -8,8 +8,13 @@ export const jwtCookieConstants = {
 };
 
 export const databaseConstants = {
-  modelNames: {
-    user: 'User',
-    card: 'Card',
+  card: {
+    name: 'Card',
+  },
+  user: {
+    name: 'User',
+    virtualFields: {
+      cardsPath: 'cards',
+    },
   },
 };

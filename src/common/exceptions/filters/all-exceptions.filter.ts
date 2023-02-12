@@ -19,6 +19,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     let status: HttpStatus;
     let message: string;
     let stackTrace: string;
+
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       message =

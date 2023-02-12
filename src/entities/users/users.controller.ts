@@ -14,10 +14,14 @@ export class UsersController {
   }
 
   @Get(':id')
-  public async getUserById(@Param() id: string) {
-    const user = await this.userService.find(id);
+  public async getUserById(@Param() param: GetUserParam) {
+    const user = await this.userService.find(param.id);
     return {
       user,
     };
   }
+}
+
+interface GetUserParam {
+  id: string;
 }

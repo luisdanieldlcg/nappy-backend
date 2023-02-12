@@ -1,9 +1,8 @@
-import { FilterQuery, ProjectionType } from 'mongoose';
-import { EntityDTO } from 'src/common/dto/entity-dto';
+import { FilterQuery, ProjectionType, SaveOptions } from 'mongoose';
 import { Future } from 'src/common/types';
 
-export abstract class IMongoDBRepository<T> {
-  abstract create(dto: EntityDTO): Future<T>;
+export abstract class IMongoDBRepository<T extends Document> {
+  abstract create(dto: object, options?: SaveOptions): Future<T>;
   /**
    * Find one document by its Identifier.
    * @param filter

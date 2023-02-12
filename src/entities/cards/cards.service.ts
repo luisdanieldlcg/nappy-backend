@@ -8,7 +8,12 @@ export class CardsService {
   constructor(private readonly cardRepository: CardRepository) {}
 
   public async create(dto: CreateCardDTO) {
-    const card = new this.cardRepository.cardModel(dto);
-    await this.cardRepository.create(card);
+    const result = await this.cardRepository.create(dto);
+    const card = result.unwrap();
+    return card;
+  }
+  public async findAll() {
+    const cards = await this.cardRepository.findAll();
+    return cards.unwrap();
   }
 }

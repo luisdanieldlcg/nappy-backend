@@ -4,7 +4,11 @@ import * as userSchemaRules from './rules';
 
 export type UserDocument = User & Document;
 
-@Schema({ timestamps: true })
+@Schema({
+  toJSON: { virtuals: true, getters: true },
+  toObject: { virtuals: true, getters: true },
+  timestamps: true,
+})
 export class User extends mongoose.Document {
   @Prop(userSchemaRules.emailRules)
   email: string;
