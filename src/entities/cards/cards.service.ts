@@ -12,6 +12,7 @@ export class CardsService {
     const card = result.unwrap();
     return card;
   }
+
   public async findAll() {
     const cards = await this.cardRepository.findAll();
     return cards.unwrap();

@@ -1,7 +1,7 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { UserService } from './user.service';
 
-@Controller('users')
+@Controller()
 export class UsersController {
   constructor(private readonly userService: UserService) {}
 
@@ -12,16 +12,4 @@ export class UsersController {
       users,
     };
   }
-
-  @Get(':id')
-  public async getUserById(@Param() param: GetUserParam) {
-    const user = await this.userService.find(param.id);
-    return {
-      user,
-    };
-  }
-}
-
-interface GetUserParam {
-  id: string;
 }

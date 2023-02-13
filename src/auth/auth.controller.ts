@@ -28,7 +28,6 @@ import { AccessTokenPayload } from './strategies/access.strategy';
 import { Tokens } from './dtos/auth.token.dtos';
 
 @Controller('auth')
-@UsePipes(ValidationPipe)
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
