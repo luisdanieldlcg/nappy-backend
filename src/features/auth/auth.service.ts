@@ -6,16 +6,17 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { UserService } from 'src/entities/users/user.service';
 import { checkHash, makeHash } from 'src/common/utils/bcrypt';
-import { InvalidCredentialsException } from '../common/exceptions/invalid-credentials.exception';
 import { SettingsService } from 'src/common/settings/settings.service';
 import { JwtService } from '@nestjs/jwt';
 import { tokenHashRounds } from 'src/common/constants';
-import { User } from 'src/entities/users/schema';
 import { AccessTokenPayload } from './strategies/access.strategy';
 import { LocalSignInDTO, LocalSignupDTO, RefreshTokenDTO } from './dtos';
 import { Tokens } from './dtos/auth.token.dtos';
+import { UserService } from '../user/service/user.service';
+import { InvalidCredentialsException } from '../../common/exceptions/invalid-credentials.exception';
+import { User } from '../user/schema';
+import { mergeMap } from 'rxjs';
 // TODO: handle user not found exception properly
 @Injectable()
 export class AuthService {
@@ -27,6 +28,7 @@ export class AuthService {
   ) {}
 
   public async register(dto: LocalSignupDTO) {
+    this.userService.findByEmail(dto.email).pipe();
     const user = await this.userService.create(dto);
     const tokens = await this.processTokens(user);
     return {
@@ -58,7 +60,7 @@ export class AuthService {
   public async logout(userId: string) {
     // Only retrieve user data if refresh token is present
     // TODO filter for refresh token != null
-    const user = await this.userService.find(userId);
+    const user = await this.userService.findById(userId);
     user.refreshToken = undefined;
     await user.save({ validateBeforeSave: false });
   }
@@ -70,7 +72,7 @@ export class AuthService {
    * @param dto
    */
   public async verifyAccessToken(dto: AccessTokenPayload) {
-    const user = await this.userService.find(dto.id);
+    const user = await this.userService.findById(dto.id);
     // Check if the user still exists
     if (!user) {
       throw new HttpException(
@@ -82,7 +84,7 @@ export class AuthService {
     // TODO: Check if user changed password after the token was issued
   }
   public async refreshToken(dto: RefreshTokenDTO) {
-    const user = await this.userService.find(dto.id);
+    const user = await this.userService.findById(dto.id);
     if (!user) {
       throw new HttpException(
         'The user belonging to this token was not found',

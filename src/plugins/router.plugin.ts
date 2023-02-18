@@ -1,14 +1,14 @@
-import { CardsModule } from 'src/entities/cards/cards.module';
-import { UsersModule } from 'src/entities/users/users.module';
+import { CardModule } from '../features/card/card.module';
+import { UserModule } from '../features/user/user.module';
 
 export default [
   {
     path: '/users',
-    module: UsersModule,
+    module: UserModule,
     children: [
       {
         path: '/:userId/cards',
-        module: CardsModule,
+        module: CardModule,
       },
     ],
   },

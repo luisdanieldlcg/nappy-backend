@@ -1,4 +1,4 @@
-import { Card, CardSchema } from './schema';
+import { Card, CardSchema } from '.';
 
 function populateFindQueries(this: Card, next) {
   // this.populate({

@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller.js';
-import { AuthModule } from './auth/auth.module.js';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LoggerModule } from 'nestjs-pino';
 import { APP_FILTER, RouterModule } from '@nestjs/core';
 import { AllExceptionsFilter } from './common/exceptions/filters/all-exceptions.filter.js';
-import { CardsModule } from './entities/cards/cards.module';
-import { UsersModule } from './entities/users/users.module.js';
+
 import { pino, config, mongoose, router } from './plugins';
+import { AuthModule } from './features/auth/auth.module.js';
+import { CardModule } from './features/card/card.module.js';
+import { UserModule } from './features/user/user.module.js';
 const plugins = [
   LoggerModule.forRoot(pino),
   ConfigModule.forRoot(config),
@@ -16,7 +17,7 @@ const plugins = [
   RouterModule.register(router),
 ];
 @Module({
-  imports: [...plugins, AuthModule, CardsModule, UsersModule],
+  imports: [...plugins, AuthModule, CardModule, UserModule],
   controllers: [AppController],
   providers: [
     {

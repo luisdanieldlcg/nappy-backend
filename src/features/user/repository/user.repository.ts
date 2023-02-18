@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ProjectionType } from 'mongoose';
-import { User, UserDocument } from './schema';
-import { Future } from 'src/common/types';
-import { MongoDBRepository } from 'src/database/repository/impl/mongo.repository-impl';
-import { IUserRepository } from 'src/database/repository/user.repository';
-import { databaseConstants } from 'src/common/constants';
+import { databaseConstants } from '../../../common/constants';
+import { MongoDBRepository } from '../../../interface/repository/impl/mongo.repository-impl';
+import { Projection, Stream } from '../../../interface/repository/repository';
+import { IUserRepository } from '../interface/user.repository';
+import { User, UserDocument } from '../schema';
 
 type T = UserDocument;
 
@@ -21,7 +21,7 @@ export class UserRepositoryImpl
       },
     });
   }
-  public async findByEmail(email: string, proj?: ProjectionType<T>): Future<T> {
-    return await this.findOne({ email }, proj);
+  public findByEmail(email: string, proj?: Projection): Stream<T> {
+    return this.findOne({ email }, proj);
   }
 }
