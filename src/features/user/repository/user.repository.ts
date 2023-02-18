@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ProjectionType } from 'mongoose';
+import { Model } from 'mongoose';
 import { databaseConstants } from '../../../common/constants';
 import { MongoDBRepository } from '../../../interface/repository/impl/mongo.repository-impl';
 import { Projection, Stream } from '../../../interface/repository/repository';
@@ -23,5 +23,8 @@ export class UserRepositoryImpl
   }
   public findByEmail(email: string, proj?: Projection): Stream<T> {
     return this.findOne({ email }, proj);
+  }
+  public existsByEmail(email: string): Stream<boolean> {
+    return this.exists({ email });
   }
 }

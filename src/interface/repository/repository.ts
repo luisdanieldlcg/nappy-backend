@@ -10,5 +10,6 @@ export interface IRepository<T> {
   findOne(filter?: Filter<T>, proj?: Projection): Stream<T>;
   findById(id: string): Stream<T>;
   create(dto: object): Stream<T>;
-  deleteMany(filter?: Filter<T>): Observable<any>;
+  deleteMany(filter?: Filter<T>): Stream<any>;
+  exists(filter: Filter<T>): Stream<boolean>;
 }

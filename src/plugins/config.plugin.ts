@@ -16,6 +16,6 @@ export default {
     TOKEN_PRIVATE_KEY: Joi.string().required(),
     ACCESS_TOKEN_EXPIRES_IN: Joi.required(),
     REFRESH_TOKEN_EXPIRES_IN: Joi.required(),
-    TOKEN_COOKIE_EXPIRES_IN: Joi.number().required(),
+    COOKIE_SESSION_EXPIRES_IN: Joi.number().required(),
   }),
 };

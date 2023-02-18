@@ -6,6 +6,7 @@ import { userHooksFactory } from './schema/user.hooks';
 import { UserRepositoryImpl } from './repository/user.repository';
 import { UserService } from './service/user.service';
 import { UserController } from './controller/user.controller';
+import { UserInitializerService } from './service/user-init.service';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UserController } from './controller/user.controller';
     ]),
   ],
   providers: [
+    UserInitializerService,
     UserService,
     {
       provide: IUserRepository,

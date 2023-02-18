@@ -9,11 +9,6 @@ export class RefreshTokenDTO {
   token: string;
 }
 
-export type Tokens = {
-  accessToken: string;
-  refreshToken: string;
-};
-
 export type VerifyAccessTokenDTO = {
   // Id of the user belonging to this token
   id: string;

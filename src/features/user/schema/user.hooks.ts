@@ -28,6 +28,5 @@ export const userHooksFactory = () => {
   });
 
   schema.pre('save', handlePasswordHash);
-
   return schema;
 };

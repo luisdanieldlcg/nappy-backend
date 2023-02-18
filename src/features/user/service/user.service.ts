@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { IUserRepository } from 'src/features/user/interface/user.repository';
-import { LocalSignupDTO } from '../../auth/dtos';
+import { Projection } from '../../../common/types';
+import { SignupDTO } from '../../auth/dtos';
 
 @Injectable()
 export class UserService {
@@ -8,7 +9,7 @@ export class UserService {
 
   constructor(private readonly userRepository: IUserRepository) {}
 
-  public create(dto: LocalSignupDTO) {
+  public create(dto: SignupDTO) {
     return this.userRepository.create({
       ...dto,
     });
@@ -16,13 +17,12 @@ export class UserService {
   public findById(id: string) {
     return this.userRepository.findById(id);
   }
-  public findByEmail(email: string) {
-    return this.userRepository.findByEmail(email);
+  public findByEmail(email: string, includeOrExclude: Projection) {
+    return this.userRepository.findByEmail(email, includeOrExclude);
   }
-  // public async findByEmailWithPassword(email: string): Promise<User> {
-  //   const result = await this.userRepository.findByEmail(email, '+password');
-  //   return result.unwrap();
-  // }
+  public existsByEmail(email: string) {
+    return this.userRepository.existsByEmail(email);
+  }
   public findAll() {
     return this.userRepository.find({});
   }

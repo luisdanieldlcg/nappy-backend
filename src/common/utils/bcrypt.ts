@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+
 export async function makeHash(data: string, rounds: number): Promise<string> {
   const salt = await bcrypt.genSalt(rounds);
   const hash = await bcrypt.hash(data, salt);
@@ -9,5 +10,5 @@ export async function checkHash(args: {
   raw: string;
   hash: string;
 }): Promise<boolean> {
-  return await bcrypt.compare(args.raw, args.hash);
+  return bcrypt.compare(args.raw, args.hash);
 }

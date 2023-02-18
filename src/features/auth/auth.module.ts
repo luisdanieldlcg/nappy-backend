@@ -1,15 +1,22 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
+import { AuthService } from './service/auth.service';
+import { AuthController } from './controller/auth.controller';
 import { JwtModule } from '@nestjs/jwt';
-import { SettingsService } from 'src/common/settings/settings.service';
 import { AccessStrategy } from './strategies/access.strategy';
 import { RefreshStrategy } from './strategies/refresh.strategy';
 import { UserModule } from '../user/user.module';
+import { SettingsService } from '../../common/services/settings.service';
+import { CookieService } from '../../common/services/cookie.service';
 
 @Module({
-  imports: [UserModule, JwtModule.register({})],
-  providers: [AuthService, AccessStrategy, RefreshStrategy, SettingsService],
+  imports: [UserModule, JwtModule.register(null)],
+  providers: [
+    AuthService,
+    AccessStrategy,
+    RefreshStrategy,
+    SettingsService,
+    CookieService,
+  ],
   controllers: [AuthController],
 })
 export class AuthModule {}

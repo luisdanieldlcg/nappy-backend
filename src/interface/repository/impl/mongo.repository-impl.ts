@@ -1,6 +1,6 @@
-import { Model, PopulateOptions } from 'mongoose';
+import { Document, Model, PopulateOptions } from 'mongoose';
 import { Filter, IRepository, Projection, Stream } from '../repository';
-import { from, Observable } from 'rxjs';
+import { from, map, Observable } from 'rxjs';
 
 type RepositoryOptions = {
   populateOnFindOne?: PopulateOptions;
@@ -28,7 +28,13 @@ export abstract class MongoDBRepository<M extends Document>
   public findById(id: string): Stream<M> {
     return from(this.entity.findById(id).exec());
   }
-  public deleteMany(filter?: Filter<M>): Observable<any> {
+  public deleteMany(filter?: Filter<M>): Stream<any> {
     return from(this.entity.deleteMany(filter).exec());
+  }
+
+  public exists(filter: Filter<M>): Stream<boolean> {
+    return from(this.entity.exists(filter).exec()).pipe(
+      map((exists) => exists != null),
+    );
   }
 }

@@ -1,15 +1,16 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose from 'mongoose';
+import { Prop, Schema } from '@nestjs/mongoose';
+import { Document, Types } from 'mongoose';
+import { from, Observable } from 'rxjs';
+import { createSchemaWithMethods } from '../../../common/mongo/schema.factory';
+import { checkHash } from '../../../common/utils/bcrypt';
 import * as userSchemaRules from './rules';
 
 export type UserDocument = User & Document;
 
 @Schema({
-  toJSON: { virtuals: true, getters: true },
-  toObject: { virtuals: true, getters: true },
   timestamps: true,
 })
-export class User extends mongoose.Document {
+export class User extends Document {
   @Prop(userSchemaRules.emailRules)
   email: string;
   @Prop(userSchemaRules.passwordRules)
@@ -18,6 +19,14 @@ export class User extends mongoose.Document {
   passwordConfirm: string;
   @Prop(userSchemaRules.refreshTokenRules)
   refreshToken: string;
+  comparePassword(password: string): Observable<boolean> {
+    return from(
+      checkHash({
+        raw: password,
+        hash: this.password,
+      }),
+    );
+  }
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const UserSchema = createSchemaWithMethods(User);
