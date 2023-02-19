@@ -9,6 +9,7 @@ export class CardService {
   constructor(private readonly cardRepository: CardRepository) {}
 
   public create(dto: CreateCardDTO, user: UserPrincipal) {
+    console.log({ dto });
     return this.cardRepository.create({
       ...dto,
       createdBy: user.id,
