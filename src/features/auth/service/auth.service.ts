@@ -9,6 +9,7 @@ import { LoginDTO, SignupDTO } from '../dtos';
 import { InvalidCredentialsException } from '../../../common/exceptions/invalid-credentials.exception';
 import { User } from '../../user/schema';
 import { SettingsService } from '../../../common/services/settings.service';
+import { JwtPayload } from '../interface/jwt-payload.interface';
 
 export interface TokenResponse {
   accessToken: string;
@@ -51,7 +52,7 @@ export class AuthService {
    * @returns TokenResponse
    */
   public logIn(user: User): Observable<TokenResponse> {
-    const payload = {
+    const payload: JwtPayload = {
       sub: user.id,
       email: user.email,
     };
@@ -91,24 +92,29 @@ export class AuthService {
    */
   public validateUser(dto: LoginDTO): Observable<User> {
     // Find the user by email and include the password
-    return this.userService.findByEmail(dto.email, { password: 1 }).pipe(
-      // If the user is not found, set an empty stream
-      mergeMap((user) => (user ? of(user) : EMPTY)),
+    return (
+      this.userService
+        // Select email and password
+        .findByEmail(dto.email, { email: 1, password: 1 })
+        .pipe(
+          // If the user is not found, set an empty stream
+          mergeMap((user) => (user ? of(user) : EMPTY)),
 
-      // Detailed info could be helpful for crackers
-      // Thus we are using a generic message.
-      throwIfEmpty(() => new InvalidCredentialsException()),
-      // We know the user is present
-      mergeMap((user) => {
-        return user.comparePassword(dto.password).pipe(
-          map((didMatch) => {
-            if (!didMatch) {
-              throw new InvalidCredentialsException();
-            }
-            return user;
+          // Detailed info could be helpful for crackers
+          // Thus we are using a generic message.
+          throwIfEmpty(() => new InvalidCredentialsException()),
+          // We know the user is present
+          mergeMap((user) => {
+            return user.comparePassword(dto.password).pipe(
+              map((didMatch) => {
+                if (!didMatch) {
+                  throw new InvalidCredentialsException();
+                }
+                return user;
+              }),
+            );
           }),
-        );
-      }),
+        )
     );
   }
   // public async login(dto: LocalSignInDTO) {

@@ -1,24 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
-import { Strategy } from 'passport-jwt';
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { lastValueFrom } from 'rxjs';
 import { jwtCookieConstants } from 'src/common/constants';
-import { VerifyAccessTokenDTO } from '../dtos/';
-
-export type AccessTokenPayload = {
-  id: string;
-  // Issued At
-  iat: number;
-  // Expiration Time.
-  exp: number;
-};
+import mainConfig from '../../../config/main.config';
+import { UserService } from '../../user/service/user.service';
+import { JwtPayload } from '../interface/jwt-payload.interface';
+import { UserPrincipal } from '../interface/user-principal.interface';
 
 const cookieExtractor = (req: Request) => {
   const cookies = req.cookies;
+
   if (!req || !cookies) {
     return undefined;
   }
   const accessToken = req.cookies[jwtCookieConstants.accessTokenName];
+  console.log(accessToken);
   if (!accessToken) {
     return undefined;
   }
@@ -29,22 +28,27 @@ export class AccessStrategy extends PassportStrategy(
   Strategy,
   jwtCookieConstants.accessTokenName,
 ) {
-  constructor() {
+  constructor(
+    @Inject(mainConfig.KEY) config: ConfigType<typeof mainConfig>,
+    private readonly userService: UserService,
+  ) {
     super({
-      jwtFromRequest: cookieExtractor,
-      ignoreExpiration: true,
-      secretOrKey: 'secret',
+      jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
+      ignoreExpiration: false,
+      secretOrKey: config.TOKEN_PRIVATE_KEY,
     });
   }
 
-  validate(payload: AccessTokenPayload) {
-    const didExpire = payload.exp <= Math.floor(Date.now() / 1000);
-    const dto: VerifyAccessTokenDTO = {
-      exp: payload.exp,
-      iat: payload.iat,
-      id: payload.id,
-      expired: didExpire,
+  public async validate(payload: JwtPayload): Promise<UserPrincipal> {
+    // This will validate that the user still exists
+    // (it could have been deleted and so access should be denied)
+    const user = await lastValueFrom(
+      this.userService.validateById(payload.sub),
+    );
+
+    return {
+      id: user.id,
+      email: user.email,
     };
-    return dto;
   }
 }

@@ -5,13 +5,17 @@ import {
   HttpStatus,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 
 import { Response } from 'express';
 import { AuthService } from '../service/auth.service';
 import { LoginDTO, SignupDTO } from '../dtos';
-import { map, mergeMap, tap } from 'rxjs';
+import { mergeMap, tap } from 'rxjs';
 import { CookieService } from '../../../common/services/cookie.service';
+import { AccessGuard } from '../guards';
+import { UserPrincipal } from '../interface/user-principal.interface';
+import { GetUserPrincipal } from '../decorators/user-principal.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -22,7 +26,7 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(
+  public async login(
     @Body() input: LoginDTO,
     @Res({ passthrough: true }) res: Response,
   ) {
@@ -38,16 +42,27 @@ export class AuthController {
   }
 
   @Post('signup')
+  @HttpCode(HttpStatus.CREATED)
   public signup(
     @Body() input: SignupDTO,
     @Res({ passthrough: true }) res: Response,
   ) {
     return this.authService.register(input).pipe(
       tap((tokens) => {
-        this.cookieService.setAccessCookie(res, tokens.accessToken);
-        this.cookieService.setRefreshCookie(res, tokens.refreshToken);
+        if (tokens) {
+          this.cookieService.setAccessCookie(res, tokens.accessToken);
+          this.cookieService.setRefreshCookie(res, tokens.refreshToken);
+        }
       }),
     );
+  }
+
+  @Post('verify')
+  @UseGuards(AccessGuard)
+  @HttpCode(HttpStatus.OK)
+  public verify(@GetUserPrincipal() user: UserPrincipal) {
+    console.log({ user });
+    return {};
   }
 
   // @Post('logout')
@@ -100,16 +115,4 @@ export class AuthController {
   //   return tokens;
   // }
 
-  // private setJwtCookies(res: Response, tokens: TOKENRES) {
-  //   res.cookie(
-  //     jwtCookieConstants.accessTokenName,
-  //     tokens.accessToken,
-  //     this.settings.jwtCookie(),
-  //   );
-  //   res.cookie(
-  //     jwtCookieConstants.refreshTokenName,
-  //     tokens.refreshToken,
-  //     this.settings.jwtCookie(),
-  //   );
-  // }
 }

@@ -3,8 +3,8 @@ export const passwordHashRounds = 12;
 export const tokenHashRounds = 10;
 
 export const jwtCookieConstants = {
-  refreshTokenName: 'jwt-refresh',
-  accessTokenName: 'jwt-access',
+  accessTokenName: 'access-token',
+  refreshTokenName: 'refresh-token',
 };
 
 export const databaseConstants = {

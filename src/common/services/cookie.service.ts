@@ -2,9 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { Response } from 'express';
 import mainConfig from '../../config/main.config';
+import { jwtCookieConstants } from '../constants';
 
-const ACCESS_TOKEN_KEY = 'access-token';
-const REFRESH_TOKEN_KEY = 'refresh-token';
 const REFRESH_TOKEN_PATH = '/api/v1/auth/refresh-token';
 @Injectable()
 export class CookieService {
@@ -16,7 +15,7 @@ export class CookieService {
   public setAccessCookie(response: Response, token: string) {
     const minutes = this.config.SESSION_LIFETIME;
     const maxAgeInMS = minutes * 60 * 1000;
-    response.cookie(ACCESS_TOKEN_KEY, token, {
+    response.cookie(jwtCookieConstants.accessTokenName, token, {
       httpOnly: true,
       secure: false,
       maxAge: maxAgeInMS,
@@ -26,7 +25,7 @@ export class CookieService {
   public setRefreshCookie(response: Response, token: string) {
     const hours = this.config.REFRESH_TOKEN_LIFETIME;
     const maxAgeInMS = hours * 60 * 60 * 1000;
-    response.cookie(REFRESH_TOKEN_KEY, token, {
+    response.cookie(jwtCookieConstants.refreshTokenName, token, {
       httpOnly: true,
       secure: false,
       path: REFRESH_TOKEN_PATH,
@@ -35,11 +34,11 @@ export class CookieService {
   }
 
   public terminateRefreshTokenCookie(response: Response) {
-    response.clearCookie(REFRESH_TOKEN_KEY, {
+    response.clearCookie(jwtCookieConstants.refreshTokenName, {
       path: REFRESH_TOKEN_PATH,
     });
   }
   public terminateAccessTokenCookie(response: Response) {
-    response.clearCookie(ACCESS_TOKEN_KEY);
+    response.clearCookie(jwtCookieConstants.refreshTokenName);
   }
 }
