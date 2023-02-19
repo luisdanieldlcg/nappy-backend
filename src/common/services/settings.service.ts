@@ -11,15 +11,17 @@ export class SettingsService {
   ) {}
 
   public jwtAccessToken(): JwtSignOptions {
+    const minutes = this.config.SESSION_LIFETIME;
     return {
       privateKey: this.config.TOKEN_PRIVATE_KEY,
-      expiresIn: this.config.ACCESS_TOKEN_EXPIRES_IN,
+      expiresIn: minutes * 60,
     };
   }
   public jwtRefreshToken(): JwtSignOptions {
+    const hours = this.config.REFRESH_TOKEN_LIFETIME;
     return {
       privateKey: this.config.TOKEN_PRIVATE_KEY,
-      expiresIn: this.config.REFRESH_TOKEN_EXPIRES_IN,
+      expiresIn: hours * 60 * 60,
     };
   }
 }

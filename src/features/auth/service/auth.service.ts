@@ -29,15 +29,17 @@ export class AuthService {
    * @param dto SignupDTO
    * @returns TokenResponse
    */
-  public register(dto: SignupDTO) {
+  public register(dto: SignupDTO): Observable<TokenResponse> {
     return this.userService.existsByEmail(dto.email).pipe(
       mergeMap((exists) => {
         if (exists) {
           throw new ConflictException('Email already exists');
         }
-        // TODO: return jwt token as http only
-        const user = this.userService.create(dto);
-        return user;
+        return this.userService.create(dto).pipe(
+          mergeMap((user) => {
+            return this.logIn(user);
+          }),
+        );
       }),
     );
   }
@@ -109,7 +111,6 @@ export class AuthService {
       }),
     );
   }
-  DO: return jwt token as http only
   // public async login(dto: LocalSignInDTO) {
   //   const user = await this.userService.findByEmailWithPassword(dto.email);
   //   if (!user) {

@@ -13,21 +13,27 @@ export class CookieService {
     private readonly config: ConfigType<typeof mainConfig>,
   ) {}
 
+  public setAccessCookie(response: Response, token: string) {
+    const minutes = this.config.SESSION_LIFETIME;
+    const maxAgeInMS = minutes * 60 * 1000;
+    response.cookie(ACCESS_TOKEN_KEY, token, {
+      httpOnly: true,
+      secure: false,
+      maxAge: maxAgeInMS,
+    });
+  }
+
   public setRefreshCookie(response: Response, token: string) {
+    const hours = this.config.REFRESH_TOKEN_LIFETIME;
+    const maxAgeInMS = hours * 60 * 60 * 1000;
     response.cookie(REFRESH_TOKEN_KEY, token, {
       httpOnly: true,
       secure: false,
       path: REFRESH_TOKEN_PATH,
-      maxAge: this.config.COOKIE_SESSION_EXPIRES_IN,
+      maxAge: maxAgeInMS,
     });
   }
-  public setAccessCookie(response: Response, token: string) {
-    response.cookie(ACCESS_TOKEN_KEY, token, {
-      httpOnly: true,
-      secure: false,
-      maxAge: this.config.COOKIE_SESSION_EXPIRES_IN,
-    });
-  }
+
   public terminateRefreshTokenCookie(response: Response) {
     response.clearCookie(REFRESH_TOKEN_KEY, {
       path: REFRESH_TOKEN_PATH,

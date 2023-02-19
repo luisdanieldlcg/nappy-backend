@@ -42,11 +42,12 @@ export class AuthController {
     @Body() input: SignupDTO,
     @Res({ passthrough: true }) res: Response,
   ) {
-    // this.setJwtCookies(res, {
-    //   accessToken: response.accessToken,
-    //   refreshToken: response.refreshToken,
-    // });
-    return this.authService.register(input);
+    return this.authService.register(input).pipe(
+      tap((tokens) => {
+        this.cookieService.setAccessCookie(res, tokens.accessToken);
+        this.cookieService.setRefreshCookie(res, tokens.refreshToken);
+      }),
+    );
   }
 
   // @Post('logout')

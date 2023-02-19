@@ -14,8 +14,7 @@ export default {
     DATABASE_URL: Joi.string().required(),
     DATABASE_PASSWORD: Joi.string().required(),
     TOKEN_PRIVATE_KEY: Joi.string().required(),
-    ACCESS_TOKEN_EXPIRES_IN: Joi.required(),
-    REFRESH_TOKEN_EXPIRES_IN: Joi.required(),
-    COOKIE_SESSION_EXPIRES_IN: Joi.number().required(),
+    SESSION_LIFETIME: Joi.number().required(),
+    REFRESH_TOKEN_LIFETIME: Joi.number().required(),
   }),
 };

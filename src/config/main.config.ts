@@ -9,11 +9,8 @@ export default registerAs('main', () => {
   return {
     DATABASE_URL,
     TOKEN_PRIVATE_KEY: process.env.TOKEN_PRIVATE_KEY,
-
-    // TODO: create unified way of expiring token and cookie sessions
-    COOKIE_SESSION_EXPIRES_IN: parseInt(process.env.COOKIE_SESSION_EXPIRES_IN),
-    ACCESS_TOKEN_EXPIRES_IN: process.env.ACCESS_TOKEN_EXPIRES_IN,
-    REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN,
+    SESSION_LIFETIME: parseInt(process.env.SESSION_LIFETIME),
+    REFRESH_TOKEN_LIFETIME: parseInt(process.env.REFRESH_TOKEN_LIFETIME),
     ENVIRONMENT: process.env.NODE_ENV,
   };
 });

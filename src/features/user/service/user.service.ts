@@ -1,7 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { Observable } from 'rxjs';
 import { IUserRepository } from 'src/features/user/interface/user.repository';
 import { Projection } from '../../../common/types';
 import { SignupDTO } from '../../auth/dtos';
+import { User } from '../schema';
 
 @Injectable()
 export class UserService {
@@ -9,7 +11,7 @@ export class UserService {
 
   constructor(private readonly userRepository: IUserRepository) {}
 
-  public create(dto: SignupDTO) {
+  public create(dto: SignupDTO): Observable<User> {
     return this.userRepository.create({
       ...dto,
     });
