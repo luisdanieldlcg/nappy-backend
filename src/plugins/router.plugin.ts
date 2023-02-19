@@ -1,15 +1,15 @@
-import { CardModule } from '../features/card/card.module';
-import { UserModule } from '../features/user/user.module';
+// import { CardModule } from '../features/card/card.module';
+// import { UserModule } from '../features/user/user.module';
 
-export default [
-  {
-    path: '/users',
-    module: UserModule,
-    children: [
-      {
-        path: '/:userId/cards',
-        module: CardModule,
-      },
-    ],
-  },
-];
+// export default [
+//   {
+//     path: '/users',
+//     module: UserModule,
+//     children: [
+//       {
+//         path: '/:userId/cards',
+//         module: CardModule,
+//       },
+//     ],
+//   },
+// ];

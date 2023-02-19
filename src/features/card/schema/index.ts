@@ -1,5 +1,6 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { createSchemaWithMethods } from '../../../common/mongo/schema.factory';
 import * as cardSchemaRules from './rules';
 
 export type CardDocument = Card & Document;
@@ -16,8 +17,10 @@ export class Card extends mongoose.Document {
   jobTitle: string;
   @Prop(cardSchemaRules.companyRules)
   company: string;
+  // I decided to make parent referencing because the user could potentially have
+  // huge array of cards which could reach to the document size limit.
   @Prop(cardSchemaRules.userRules)
-  user: mongoose.Schema.Types.ObjectId;
+  createdBy: mongoose.Schema.Types.ObjectId;
 }
 
-export const CardSchema = SchemaFactory.createForClass(Card);
+export const CardSchema = createSchemaWithMethods(Card);

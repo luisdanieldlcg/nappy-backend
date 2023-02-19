@@ -1,20 +1,20 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { UserPrincipal } from '../../auth/interface/user-principal.interface';
+import { CreateCardDTO } from '../dto/create-card.dto';
 import { CardRepository } from '../repository/card.repository';
-import { CreateCardDTO } from '../dto';
 
 @Injectable()
 export class CardService {
   private readonly logger = new Logger(CardService.name);
   constructor(private readonly cardRepository: CardRepository) {}
 
-  // public async create(dto: CreateCardDTO) {
-  //   const result = await this.cardRepository.create(dto);
-  //   const card = result.unwrap();
-  //   return card;
-  // }
-
-  // public async findAll() {
-  //   const cards = await this.cardRepository.findAll();
-  //   return cards.unwrap();
-  // }
+  public create(dto: CreateCardDTO, user: UserPrincipal) {
+    return this.cardRepository.create({
+      ...dto,
+      createdBy: user.id,
+    });
+  }
+  public getCardsByUser(user: UserPrincipal) {
+    return this.cardRepository.findByUser(user);
+  }
 }

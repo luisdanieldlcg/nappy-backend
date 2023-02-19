@@ -1,38 +1,26 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { GetUserPrincipal } from '../../auth/decorators/user-principal.decorator';
+import { AccessGuard } from '../../auth/guards';
+import { UserPrincipal } from '../../auth/interface/user-principal.interface';
+import { CreateCardDTO } from '../dto/create-card.dto';
 import { CardService } from '../service/card.service';
-import { CreateCardDTO } from '../dto';
-interface GetParam {
-  id: string;
-}
-@Controller()
+
+@Controller('cards')
 export class CardController {
-  constructor(private readonly cardsService: CardService) {}
+  constructor(private readonly cardService: CardService) {}
 
-  //   @Post()
-  //   @HttpCode(HttpStatus.CREATED)
-  //   public async create(
-  //     @Body() input: CreateCardDTO,
-  //     @Param('userId') userId: string,
-  //   ) {
-  //     if (!input.user) {
-  //       input.user = userId;
-  //     }
-  //     const response = await this.cardsService.create(input);
-  //     return response;
-  //   }
+  @Post()
+  @UseGuards(AccessGuard)
+  public create(
+    @Body() dto: CreateCardDTO,
+    @GetUserPrincipal() user: UserPrincipal,
+  ) {
+    return this.cardService.create(dto, user);
+  }
 
-  //   @Get()
-  //   public async findAll() {
-  //     const response = await this.cardsService.findAll();
-  //     return response;
-  //   }
-  // }
+  @Get()
+  @UseGuards(AccessGuard)
+  public getCardsByUser(@GetUserPrincipal() user: UserPrincipal) {
+    return this.cardService.getCardsByUser(user);
+  }
 }

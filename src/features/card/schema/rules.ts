@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
-import { databaseConstants } from 'src/common/constants';
-import { SchemaRule } from 'src/common/types';
+import { databaseConstants } from '../../../common/constants';
+import { SchemaRule } from '../../../common/types';
+
 const textNotRequired: SchemaRule = {
   type: String,
   required: false,
