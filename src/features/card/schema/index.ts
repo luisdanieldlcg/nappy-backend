@@ -5,10 +5,19 @@ import * as cardSchemaRules from './rules';
 
 export type CardDocument = Card & Document;
 
-@Schema({ timestamps: true })
+@Schema({
+  timestamps: true,
+  toJSON: {
+    virtuals: true,
+  },
+  toObject: {
+    virtuals: true,
+  },
+})
 export class Card extends mongoose.Document {
+  id: string;
   @Prop(cardSchemaRules.nameRules)
-  name: string;
+  label: string;
   @Prop(cardSchemaRules.firstNameRules)
   firstName: string;
   @Prop(cardSchemaRules.lastNameRules)

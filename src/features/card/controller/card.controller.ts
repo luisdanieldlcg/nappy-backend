@@ -1,4 +1,15 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import { ParseObjectIdPipe } from '../../../common/pipe/parse-object-id.pipe';
 import { GetUserPrincipal } from '../../auth/decorators/user-principal.decorator';
 import { AccessGuard } from '../../auth/guards';
 import { UserPrincipal } from '../../auth/interface/user-principal.interface';
@@ -21,6 +32,13 @@ export class CardController {
   @Get()
   @UseGuards(AccessGuard)
   public getCardsByUser(@GetUserPrincipal() user: UserPrincipal) {
-    return this.cardService.getCardsByUser(user);
+    return this.cardService.getCardByUser(user);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(AccessGuard)
+  public delete(@Param('id', ParseObjectIdPipe) id: string) {
+    return this.cardService.delete(id);
   }
 }

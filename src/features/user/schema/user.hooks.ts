@@ -18,6 +18,7 @@ async function handlePasswordHash(next) {
 
 export const userHooksFactory = () => {
   const schema = UserSchema;
+
   // Virtual Populate
   schema.virtual(databaseConstants.user.virtualFields.cardsPath, {
     ref: Card.name,
@@ -28,5 +29,6 @@ export const userHooksFactory = () => {
   });
 
   schema.pre('save', handlePasswordHash);
+
   return schema;
 };

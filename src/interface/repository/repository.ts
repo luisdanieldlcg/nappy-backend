@@ -12,4 +12,5 @@ export interface IRepository<T> {
   create(dto: object): Stream<T>;
   deleteMany(filter?: Filter<T>): Stream<any>;
   exists(filter: Filter<T>): Stream<boolean>;
+  deleteById(id: string): Stream<T>;
 }

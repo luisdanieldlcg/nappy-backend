@@ -1,4 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { EMPTY, mergeMap, of, throwIfEmpty } from 'rxjs';
 import { UserPrincipal } from '../../auth/interface/user-principal.interface';
 import { CreateCardDTO } from '../dto/create-card.dto';
 import { CardRepository } from '../repository/card.repository';
@@ -15,7 +16,14 @@ export class CardService {
       createdBy: user.id,
     });
   }
-  public getCardsByUser(user: UserPrincipal) {
+
+  public getCardByUser(user: UserPrincipal) {
     return this.cardRepository.findByUser(user);
+  }
+  public delete(id: string) {
+    return this.cardRepository.deleteById(id).pipe(
+      mergeMap((p) => (p ? of(p) : EMPTY)),
+      throwIfEmpty(() => new NotFoundException(`Card: ${id} was not found`)),
+    );
   }
 }

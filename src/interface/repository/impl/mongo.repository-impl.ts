@@ -37,4 +37,7 @@ export abstract class MongoDBRepository<M extends Document>
       map((exists) => exists != null),
     );
   }
+  public deleteById(id: string): Stream<M> {
+    return from(this.entity.findByIdAndDelete(id).exec());
+  }
 }
