@@ -53,7 +53,7 @@ export class AuthService {
    */
   public logIn(user: User): Observable<TokenResponse> {
     const payload: JwtPayload = {
-      sub: user.id,
+      sub: user._id,
       email: user.email,
     };
     // Sign access token

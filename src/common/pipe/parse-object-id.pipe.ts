@@ -12,6 +12,7 @@ export class ParseObjectIdPipe implements PipeTransform {
     if (!mongoose.isValidObjectId(value)) {
       throw new BadRequestException(`${metadata.data} must be an ObjectId`);
     }
+
     return value;
   }
 }

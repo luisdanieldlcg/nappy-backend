@@ -15,8 +15,8 @@ export type CardDocument = Card & Document;
   },
 })
 export class Card extends mongoose.Document {
-  id: string;
-  @Prop(cardSchemaRules.nameRules)
+  _id: string;
+  @Prop(cardSchemaRules.labelRules)
   label: string;
   @Prop(cardSchemaRules.firstNameRules)
   firstName: string;

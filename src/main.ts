@@ -7,7 +7,14 @@ import cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      // exceptionFactory(errors) {
+      //   console.log(errors);
+      //   throw new BadRequestException('Got an invalid value passed in');
+      // },
+    }),
+  );
   app.setGlobalPrefix('api/v1');
   app.enableCors({
     credentials: true,

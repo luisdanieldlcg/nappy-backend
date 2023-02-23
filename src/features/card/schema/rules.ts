@@ -7,10 +7,10 @@ const textNotRequired: SchemaRule = {
   required: false,
 };
 
-export const nameRules: SchemaRule = {
+export const labelRules: SchemaRule = {
   type: String,
-  required: [true, "'name' is missing."],
-  maxlength: 20,
+  required: false,
+  default: 'Work',
 };
 
 export const firstNameRules: SchemaRule = {

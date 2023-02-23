@@ -1,4 +1,11 @@
-import { Document, Model, PopulateOptions } from 'mongoose';
+import {
+  Document,
+  FilterQuery,
+  Model,
+  PopulateOptions,
+  QueryOptions,
+  UpdateQuery,
+} from 'mongoose';
 import { Filter, IRepository, Projection, Stream } from '../repository';
 import { from, map, Observable } from 'rxjs';
 
@@ -39,5 +46,14 @@ export abstract class MongoDBRepository<M extends Document>
   }
   public deleteById(id: string): Stream<M> {
     return from(this.entity.findByIdAndDelete(id).exec());
+  }
+  public update(
+    filter: FilterQuery<M>,
+    update: UpdateQuery<M>,
+    queryOptions?: QueryOptions<M>,
+  ): Stream<M> {
+    return from(
+      this.entity.findOneAndUpdate(filter, update, queryOptions).exec(),
+    );
   }
 }

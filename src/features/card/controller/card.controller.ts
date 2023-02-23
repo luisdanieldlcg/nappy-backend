@@ -6,14 +6,16 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { mergeMap } from 'rxjs';
 import { ParseObjectIdPipe } from '../../../common/pipe/parse-object-id.pipe';
 import { GetUserPrincipal } from '../../auth/decorators/user-principal.decorator';
 import { AccessGuard } from '../../auth/guards';
 import { UserPrincipal } from '../../auth/interface/user-principal.interface';
-import { CreateCardDTO } from '../dto/create-card.dto';
+import { CardDTO, CreateCardDTO } from '../dto/card.dto';
 import { CardService } from '../service/card.service';
 
 @Controller('cards')
@@ -32,7 +34,21 @@ export class CardController {
   @Get()
   @UseGuards(AccessGuard)
   public getCardsByUser(@GetUserPrincipal() user: UserPrincipal) {
-    return this.cardService.getCardByUser(user);
+    return this.cardService.getCardsByUser(user);
+  }
+
+  @Patch(':id')
+  @UseGuards(AccessGuard)
+  public update(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @Body() dto: CardDTO,
+    @GetUserPrincipal() user: UserPrincipal,
+  ) {
+    return this.cardService.assertCardBelongsTo(id, user).pipe(
+      mergeMap((_) => {
+        return this.cardService.updateCard(id, dto, user);
+      }),
+    );
   }
 
   @Delete(':id')

@@ -17,7 +17,6 @@ const cookieExtractor = (req: Request) => {
     return undefined;
   }
   const accessToken = req.cookies[jwtCookieConstants.accessTokenName];
-  console.log(accessToken);
   if (!accessToken) {
     return undefined;
   }
@@ -47,7 +46,7 @@ export class AccessStrategy extends PassportStrategy(
     );
 
     return {
-      id: user.id,
+      id: user._id,
       email: user.email,
     };
   }
