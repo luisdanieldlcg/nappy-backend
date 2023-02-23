@@ -45,7 +45,7 @@ export class CardController {
     @GetUserPrincipal() user: UserPrincipal,
   ) {
     return this.cardService.assertCardBelongsTo(id, user).pipe(
-      mergeMap((_) => {
+      mergeMap((card) => {
         return this.cardService.updateCard(id, dto, user);
       }),
     );
