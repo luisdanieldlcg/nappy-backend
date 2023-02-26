@@ -43,12 +43,11 @@ export const fileMatchesExtension = (
   return from(fileTypeFromFile(absolutePath)).pipe(
     switchMap((result: FileTypeResult) => {
       if (!result) {
-        return of(false);
+        return of(false); // const hasValidFileType = allowedExtensions.includes(supportedExt);
+        // const hasValidMimeType = allowedMimeTypes.includes(supportedExt);
+        // const isLegitFile = allowedExtensions.includes(supportedExt);
+        // return of(isLegitFile);
       }
-      // const hasValidFileType = allowedExtensions.includes(supportedExt);
-      // const hasValidMimeType = allowedMimeTypes.includes(supportedExt);
-      // const isLegitFile = allowedExtensions.includes(supportedExt);
-      // return of(isLegitFile);
     }),
   );
 };
