@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { MongoDBRepository } from 'src/interface/repository/impl/mongo.repository-impl';
 import { Stream } from '../../../interface/repository/repository';
 import { UserPrincipal } from '../../auth/interface/user-principal.interface';
-import { CardDTO, CreateCardDTO } from '../dto/card.dto';
+import { CardDTO } from '../dto/card.dto';
 import { Card, CardDocument } from '../schema';
 
 type T = CardDocument;

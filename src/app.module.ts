@@ -14,6 +14,7 @@ const plugins = [
   LoggerModule.forRoot(pino),
   ConfigModule.forRoot(config),
   MongooseModule.forRootAsync(mongoose),
+
   // RouterModule.register(router),
 ];
 @Module({

@@ -6,6 +6,7 @@ import { cardsHooksFactory } from './schema/card.hooks';
 import { CardRepository } from './repository/card.repository';
 import { CardService } from './service/card.service';
 import { CardInitializerService } from './service/card-init.service';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   controllers: [CardController],
@@ -17,6 +18,9 @@ import { CardInitializerService } from './service/card-init.service';
         useFactory: cardsHooksFactory,
       },
     ]),
+    MulterModule.register({
+      dest: './uploads',
+    }),
   ],
 })
 export class CardModule {}

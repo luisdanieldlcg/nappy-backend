@@ -1,8 +1,8 @@
 import { Prop, Schema } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 import { from, Observable } from 'rxjs';
 import { createSchemaWithMethods } from '../../../common/mongo/schema.factory';
-import { checkHash } from '../../../common/utils/bcrypt';
+import { checkHash } from '../../../common/helpers/bcrypt';
 import * as userSchemaRules from './rules';
 
 export type UserDocument = User & Document;

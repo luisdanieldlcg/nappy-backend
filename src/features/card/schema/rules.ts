@@ -27,3 +27,9 @@ export const userRules = {
   ref: databaseConstants.user.name,
   required: [true, 'Card must belong to an user.'],
 };
+
+export const backgroundPathRules: SchemaRule = {
+  type: String,
+  required: false,
+  default: undefined,
+};
