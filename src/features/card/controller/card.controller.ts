@@ -8,15 +8,18 @@ import {
   Param,
   Patch,
   Post,
+  Req,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { join } from 'path';
-import { mergeMap } from 'rxjs';
-import { InvalidCredentialsException } from '../../../common/exceptions/invalid-credentials.exception';
-import { ImageFormatMismatchException } from '../../../common/exceptions/image-upload.exceptions';
+import { mergeMap, switchMap } from 'rxjs';
+import {
+  ImageFormatMismatchException,
+  InvalidImageFormatException,
+} from '../../../common/exceptions/image-upload.exceptions';
 import { CardImageUploadInterceptor } from '../../../common/interceptors/card-img-upload.interceptor';
 import { ParseObjectIdPipe } from '../../../common/pipe/parse-object-id.pipe';
 import { GetUserPrincipal } from '../../auth/decorators/user-principal.decorator';
@@ -24,6 +27,11 @@ import { AccessGuard } from '../../auth/guards';
 import { UserPrincipal } from '../../auth/interface/user-principal.interface';
 import { CardDTO, CreateCardDTO } from '../dto/card.dto';
 import { CardService } from '../service/card.service';
+import {
+  fileMatchesExtension,
+  removeFile,
+} from '../../../common/helpers/image-upload';
+import { Response } from 'express';
 
 @Controller('cards')
 export class CardController {
@@ -37,20 +45,45 @@ export class CardController {
     @GetUserPrincipal() user: UserPrincipal,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    console.log({ file });
-    if (!file || !file.filename) {
-      throw new ImageFormatMismatchException();
+    console.log({ dto });
+    if (file) {
+      if (!file.filename) throw new InvalidImageFormatException();
+      const imagesPath = join(process.cwd(), 'images');
+      const fullPath = imagesPath + '/' + file.filename;
+      dto.backgroundImage = file.filename;
+      return fileMatchesExtension(fullPath).pipe(
+        switchMap((isLegit) => {
+          if (!isLegit) {
+            removeFile(fullPath);
+            throw new ImageFormatMismatchException();
+          }
+          return this.cardService.create(dto, user);
+        }),
+      );
+    } else {
+      return this.cardService.create(dto, user);
     }
-    const imagesPath = join(process.cwd(), 'images');
-    const fullPath = imagesPath + '/' + file.filename;
-    console.log(fullPath);
-    return this.cardService.create(dto, user);
   }
 
   @Get()
   @UseGuards(AccessGuard)
-  public getCardsByUser(@GetUserPrincipal() user: UserPrincipal) {
-    return this.cardService.getCardsByUser(user);
+  public getCardsByUser(
+    @GetUserPrincipal() user: UserPrincipal,
+    @Res() res: Response,
+  ) {
+    return this.cardService.getCardsByUser(user).pipe(
+      switchMap((e) => {
+        console.log();
+        // e.forEach((card) => {
+        //   if (card.backgroundImage) {
+        //     res.sendFile(card.backgroundImage, {
+        //       root: './images',
+        //     });
+        //   }
+        // });
+        return e;
+      }),
+    );
   }
 
   @Patch(':id')

@@ -11,9 +11,9 @@ export class CardService {
 
   public create(dto: CreateCardDTO, user: UserPrincipal) {
     return this.cardRepository.create({
-      ...dto,
       firstName: dto.firstName || user.email.split('@')[0] || '',
       createdBy: user.id,
+      ...dto,
     });
   }
 

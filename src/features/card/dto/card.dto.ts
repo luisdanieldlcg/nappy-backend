@@ -20,6 +20,10 @@ export class CardDTO {
   @IsString()
   @IsOptional()
   company: string;
+
+  @IsString()
+  @IsOptional()
+  backgroundImage: string;
 }
 
 export class CreateCardDTO extends CardDTO {}

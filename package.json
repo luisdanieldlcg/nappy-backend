@@ -31,7 +31,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
-    "file-type": "^18.2.1",
+    "file-type": "^16.5.3",
     "joi": "^17.7.0",
     "mongoose": "^6.9.0",
     "morgan": "^1.10.0",

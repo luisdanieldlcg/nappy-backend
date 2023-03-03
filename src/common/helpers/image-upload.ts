@@ -1,11 +1,10 @@
-import { BadRequestException } from '@nestjs/common';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
-import { Request } from 'express';
 import multer, { diskStorage } from 'multer';
 import { v4 as uuid_v4 } from 'uuid';
 import path from 'path';
-import { from, map, Observable, of, switchMap } from 'rxjs';
-import { fileTypeFromFile, FileTypeResult } from 'file-type';
+import { from, Observable, of, switchMap, tap } from 'rxjs';
+import { FileTypeResult, fromFile } from 'file-type';
+import { unlinkSync } from 'fs';
 
 // Type definitions
 type SupportedFileExtension = 'png' | 'jpg' | 'jpeg';
@@ -16,7 +15,6 @@ const allowedMimeTypes: SupportedMimeType[] = [
   'image/jpg',
   'image/jpeg',
 ];
-
 export const saveImage: MulterOptions = {
   storage: diskStorage({
     destination: './images',
@@ -25,7 +23,7 @@ export const saveImage: MulterOptions = {
       cb(null, fileName);
     },
   }),
-  fileFilter: (
+  fileFilter: async (
     req: Express.Request,
     file: Express.Multer.File,
     cb: multer.FileFilterCallback,
@@ -37,17 +35,30 @@ export const saveImage: MulterOptions = {
   },
 };
 
-export const fileMatchesExtension = (
-  absolutePath: string,
-): Observable<boolean> => {
-  return from(fileTypeFromFile(absolutePath)).pipe(
+/**
+ * Will check if the given file matches its extension
+ * @param path
+ * @returns Whether the file is legit
+ */
+export const fileMatchesExtension = (path: string): Observable<boolean> => {
+  return from(fromFile(path)).pipe(
     switchMap((result: FileTypeResult) => {
       if (!result) {
-        return of(false); // const hasValidFileType = allowedExtensions.includes(supportedExt);
-        // const hasValidMimeType = allowedMimeTypes.includes(supportedExt);
-        // const isLegitFile = allowedExtensions.includes(supportedExt);
-        // return of(isLegitFile);
+        return of(false);
       }
+      const ext = result.ext as SupportedFileExtension;
+      const mime = result.mime as SupportedMimeType;
+      if (!ext || !mime) return of(false);
+      const hasValidFileType = allowedExtensions.includes(ext);
+      const hasValidMimeType = allowedMimeTypes.includes(mime);
+      return of(hasValidFileType && hasValidMimeType);
     }),
   );
+};
+export const removeFile = (path: string): void => {
+  try {
+    unlinkSync(path);
+  } catch (error) {
+    console.log('Got an error: ', error);
+  }
 };
