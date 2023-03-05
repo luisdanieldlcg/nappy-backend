@@ -48,7 +48,7 @@ export class CardController {
     console.log({ dto });
     if (file) {
       if (!file.filename) throw new InvalidImageFormatException();
-      const imagesPath = join(process.cwd(), 'images');
+      const imagesPath = join(process.cwd(), 'public/images');
       const fullPath = imagesPath + '/' + file.filename;
       dto.backgroundImage = file.filename;
       return fileMatchesExtension(fullPath).pipe(

@@ -17,7 +17,7 @@ const allowedMimeTypes: SupportedMimeType[] = [
 ];
 export const saveImage: MulterOptions = {
   storage: diskStorage({
-    destination: './images',
+    destination: './public/images',
     filename: (req, file, cb) => {
       const fileName = uuid_v4() + path.extname(file.originalname);
       cb(null, fileName);
