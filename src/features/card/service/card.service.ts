@@ -1,5 +1,23 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { EMPTY, mergeMap, of, throwIfEmpty } from 'rxjs';
+import { join } from 'path';
+import {
+  EMPTY,
+  from,
+  mergeMap,
+  Observable,
+  of,
+  switchMap,
+  tap,
+  throwIfEmpty,
+} from 'rxjs';
+import {
+  ImageFormatMismatchException,
+  InvalidImageFormatException,
+} from '../../../common/exceptions/image-upload.exceptions';
+import {
+  fileMatchesExtension,
+  removeFile,
+} from '../../../common/helpers/image-upload';
 import { UserPrincipal } from '../../auth/interface/user-principal.interface';
 import { CardDTO, CreateCardDTO } from '../dto/card.dto';
 import { CardRepository } from '../repository/card.repository';
@@ -23,6 +41,29 @@ export class CardService {
 
   public updateCard(id: string, dto: CardDTO, user: UserPrincipal) {
     return this.cardRepository.updateById(id, dto, user);
+  }
+
+  public validateImage(
+    dto: CreateCardDTO,
+    file?: Express.Multer.File,
+  ): Observable<CreateCardDTO> {
+    if (file) {
+      if (!file.filename) throw new InvalidImageFormatException();
+      dto.backgroundImage = file.filename;
+      const imagesPath = join(process.cwd(), 'public/images');
+      const fullPath = imagesPath + '/' + file.filename;
+      return fileMatchesExtension(fullPath).pipe(
+        switchMap((isLegit) => {
+          if (!isLegit) {
+            removeFile(fullPath);
+            throw new ImageFormatMismatchException();
+          }
+          return of(dto);
+        }),
+      );
+    }
+    // No need to modify DTO
+    return of(dto);
   }
 
   public assertCardBelongsTo(cardId: string, user: UserPrincipal) {
