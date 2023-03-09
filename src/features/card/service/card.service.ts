@@ -1,15 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { join } from 'path';
-import {
-  EMPTY,
-  from,
-  mergeMap,
-  Observable,
-  of,
-  switchMap,
-  tap,
-  throwIfEmpty,
-} from 'rxjs';
+import { EMPTY, mergeMap, Observable, of, switchMap, throwIfEmpty } from 'rxjs';
 import {
   ImageFormatMismatchException,
   InvalidImageFormatException,
