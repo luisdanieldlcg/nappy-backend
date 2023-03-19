@@ -40,7 +40,7 @@ export class CardService {
   ): Observable<CreateCardDTO> {
     if (file) {
       if (!file.filename) throw new InvalidImageFormatException();
-      dto.backgroundImage = file.filename;
+      dto.coverImage = file.filename;
       const imagesPath = join(process.cwd(), 'public/images');
       const fullPath = imagesPath + '/' + file.filename;
       return fileMatchesExtension(fullPath).pipe(

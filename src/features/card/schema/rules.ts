@@ -33,3 +33,16 @@ export const backgroundPathRules: SchemaRule = {
   required: false,
   default: undefined,
 };
+
+export const colorRules: SchemaRule = {
+  type: String,
+  required: false,
+  default: '#B0BEC5',
+  // Adds # sign to the color if it's missing
+  validate: {
+    message: 'Invalid hex color code.',
+    // This regular expression defines a pattern for matching a hex color code
+    // in the format of #RRGGBB or #RGB, where R, G, and B represent red, green, and blue color components respectively.
+    validator: (val: string) => /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(val),
+  },
+};

@@ -23,7 +23,11 @@ export class CardDTO {
 
   @IsString()
   @IsOptional()
-  backgroundImage: string;
+  coverImage: string;
+
+  @IsString()
+  @IsOptional()
+  color: string;
 }
 
 export class CreateCardDTO extends CardDTO {}
