@@ -26,8 +26,10 @@ export class Card extends mongoose.Document {
   jobTitle?: string;
   @Prop(cardSchemaRules.companyRules)
   company?: string;
-  @Prop(cardSchemaRules.backgroundPathRules)
+  @Prop(cardSchemaRules.backgroundImageRules)
   coverImage?: string;
+  @Prop(cardSchemaRules.avatarImageRules)
+  avatarImage?: string;
   // I decided to make parent referencing because the user could potentially have
   // huge array of cards which could reach to the document size limit.
   @Prop(cardSchemaRules.userRules)

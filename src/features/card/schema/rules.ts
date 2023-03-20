@@ -2,6 +2,12 @@ import mongoose from 'mongoose';
 import { databaseConstants } from '../../../common/constants';
 import { SchemaRule } from '../../../common/types';
 
+// set undefined value if empty
+const undefinedIfEmpty = (val?: string) => {
+  if (!val) return undefined;
+  return val;
+};
+
 const textNotRequired: SchemaRule = {
   type: String,
   required: false,
@@ -28,10 +34,18 @@ export const userRules = {
   required: [true, 'Card must belong to an user.'],
 };
 
-export const backgroundPathRules: SchemaRule = {
+export const backgroundImageRules: SchemaRule = {
   type: String,
   required: false,
   default: undefined,
+  set: undefinedIfEmpty,
+};
+
+export const avatarImageRules: SchemaRule = {
+  type: String,
+  required: false,
+  default: undefined,
+  set: undefinedIfEmpty,
 };
 
 export const colorRules: SchemaRule = {

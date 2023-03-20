@@ -27,6 +27,10 @@ export class CardDTO {
 
   @IsString()
   @IsOptional()
+  avatarImage: string;
+
+  @IsString()
+  @IsOptional()
   color: string;
 }
 
