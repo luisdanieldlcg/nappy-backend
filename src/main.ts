@@ -4,7 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import { ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import { cwd } from 'process';
@@ -12,10 +12,10 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.useGlobalPipes(
     new ValidationPipe({
-      // exceptionFactory(errors) {
-      //   console.log(errors);
-      //   throw new BadRequestException('Got an invalid value passed in');
-      // },
+      exceptionFactory(errors) {
+        console.log(errors);
+        throw new BadRequestException('Got an invalid value passed in');
+      },
     }),
   );
   app.setGlobalPrefix('api/v1');

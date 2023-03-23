@@ -1,7 +1,6 @@
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import multer, { diskStorage } from 'multer';
 import { v4 as uuid_v4 } from 'uuid';
-import path from 'path';
 import { from, Observable, of, switchMap } from 'rxjs';
 import { FileTypeResult, fromFile } from 'file-type';
 import { unlinkSync } from 'fs';
@@ -19,7 +18,6 @@ export const saveImage: MulterOptions = {
   storage: diskStorage({
     destination: './public/images',
     filename: (req, file, cb) => {
-      console.log({ file });
       const fileName = uuid_v4() + '.' + file.mimetype.split('/')[1];
       cb(null, fileName);
     },

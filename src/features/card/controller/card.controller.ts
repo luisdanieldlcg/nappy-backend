@@ -33,7 +33,6 @@ export class CardController {
     @GetUserPrincipal() user: UserPrincipal,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    console.log(file);
     return this.cardService.validateImage(dto, file).pipe(
       switchMap((dto) => this.cardService.validateImage(dto, file)),
       switchMap((newDto) => this.cardService.create(newDto, user)),
