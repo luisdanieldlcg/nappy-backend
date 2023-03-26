@@ -5,6 +5,7 @@ import { from, Observable, of, switchMap } from 'rxjs';
 import { FileTypeResult, fromFile } from 'file-type';
 import { unlinkSync } from 'fs';
 import path from 'path';
+import mime from 'mime';
 
 // Type definitions
 type SupportedFileExtension = 'png' | 'jpg' | 'jpeg';
@@ -19,8 +20,9 @@ export const saveImage: MulterOptions = {
   storage: diskStorage({
     destination: './public/images/',
     filename: (req, file, cb) => {
-      const extension = path.extname(file.originalname);
-      const fileName = uuid_v4() + extension;
+      const extension = file.mimetype.split('/')[1];
+      const fileName = uuid_v4() + '.' + extension;
+      console.log('Saving image: ' + fileName);
       cb(null, fileName);
     },
   }),
