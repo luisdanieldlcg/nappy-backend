@@ -1,6 +1,16 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { join } from 'path';
-import { EMPTY, mergeMap, Observable, of, switchMap, throwIfEmpty } from 'rxjs';
+import {
+  EMPTY,
+  forkJoin,
+  map,
+  mergeMap,
+  Observable,
+  of,
+  switchMap,
+  tap,
+  throwIfEmpty,
+} from 'rxjs';
 import {
   ImageFormatMismatchException,
   InvalidImageFormatException,
@@ -9,6 +19,7 @@ import {
   fileMatchesExtension,
   removeFile,
 } from '../../../common/helpers/image-upload';
+import { UploadedCardImages } from '../../../common/types';
 import { UserPrincipal } from '../../auth/interface/user-principal.interface';
 import { CardDTO, CreateCardDTO } from '../dto/card.dto';
 import { CardRepository } from '../repository/card.repository';
@@ -19,6 +30,7 @@ export class CardService {
   constructor(private readonly cardRepository: CardRepository) {}
 
   public create(dto: CreateCardDTO, user: UserPrincipal) {
+    console.log({ dto });
     return this.cardRepository.create({
       firstName: dto.firstName || user.email.split('@')[0] || '',
       createdBy: user.id,
@@ -33,28 +45,52 @@ export class CardService {
   public updateCard(id: string, dto: CardDTO, user: UserPrincipal) {
     return this.cardRepository.updateById(id, dto, user);
   }
-
-  public validateImage(
-    dto: CreateCardDTO,
-    file?: Express.Multer.File,
-  ): Observable<CreateCardDTO> {
-    if (file) {
-      if (!file.filename) throw new InvalidImageFormatException();
-      dto.coverImage = file.filename;
-      const imagesPath = join(process.cwd(), 'public/images');
-      const fullPath = imagesPath + '/' + file.filename;
-      return fileMatchesExtension(fullPath).pipe(
-        switchMap((isLegit) => {
-          if (!isLegit) {
-            removeFile(fullPath);
-            throw new ImageFormatMismatchException();
-          }
-          return of(dto);
-        }),
-      );
+  private validateImageContent(file?: Express.Multer.File) {
+    if (!file.filename) {
+      throw new InvalidImageFormatException();
     }
-    // No need to modify DTO
-    return of(dto);
+    const imagesPath = join(process.cwd(), 'public/images');
+    const fullPath = imagesPath + '/' + file.filename;
+    return fileMatchesExtension(fullPath).pipe(
+      switchMap((isLegit) => {
+        if (!isLegit) {
+          removeFile(fullPath);
+          throw new ImageFormatMismatchException();
+        }
+        return of(true);
+      }),
+    );
+  }
+  public validateImages(
+    dto: CreateCardDTO,
+    images: UploadedCardImages,
+  ): Observable<CreateCardDTO> {
+    if (!images) {
+      return of(dto);
+    }
+    if (!images.coverImage && !images.avatarImage) {
+      return of(dto);
+    }
+    const coverImage = images.coverImage[0];
+    const avatarImage = images.avatarImage[0];
+
+    const observables: Observable<boolean>[] = [];
+    if (coverImage) {
+      const coverObservable = this.validateImageContent(coverImage).pipe(
+        tap((valid) => (valid ? (dto.coverImage = coverImage.filename) : null)),
+      );
+      observables.push(coverObservable);
+    }
+    if (avatarImage) {
+      const avatarObservable = this.validateImageContent(avatarImage).pipe(
+        tap((valid) =>
+          valid ? (dto.avatarImage = avatarImage.filename) : null,
+        ),
+      );
+      observables.push(avatarObservable);
+    }
+
+    return forkJoin(observables).pipe(map(() => dto));
   }
 
   public assertCardBelongsTo(cardId: string, user: UserPrincipal) {

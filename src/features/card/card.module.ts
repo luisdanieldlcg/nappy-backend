@@ -18,9 +18,7 @@ import { MulterModule } from '@nestjs/platform-express';
         useFactory: cardsHooksFactory,
       },
     ]),
-    MulterModule.register({
-      dest: './uploads',
-    }),
+    MulterModule.register({}),
   ],
 })
 export class CardModule {}

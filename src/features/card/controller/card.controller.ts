@@ -8,13 +8,14 @@ import {
   Param,
   Patch,
   Post,
-  UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { mergeMap, switchMap, tap } from 'rxjs';
-import { CardImageUploadInterceptor } from '../../../common/interceptors/card-img-upload.interceptor';
+import { switchMap } from 'rxjs';
+import { CardImagesInterceptor } from '../../../common/interceptors/card-img-upload.interceptor';
 import { ParseObjectIdPipe } from '../../../common/pipe/parse-object-id.pipe';
+import { UploadedCardImages } from '../../../common/types';
 import { GetUserPrincipal } from '../../auth/decorators/user-principal.decorator';
 import { AccessGuard } from '../../auth/guards';
 import { UserPrincipal } from '../../auth/interface/user-principal.interface';
@@ -27,16 +28,15 @@ export class CardController {
 
   @Post()
   @UseGuards(AccessGuard)
-  @UseInterceptors(CardImageUploadInterceptor)
+  @UseInterceptors(CardImagesInterceptor)
   public create(
     @Body() dto: CreateCardDTO,
     @GetUserPrincipal() user: UserPrincipal,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() images: UploadedCardImages,
   ) {
-    return this.cardService.validateImage(dto, file).pipe(
-      switchMap((dto) => this.cardService.validateImage(dto, file)),
-      switchMap((newDto) => this.cardService.create(newDto, user)),
-    );
+    return this.cardService
+      .validateImages(dto, images)
+      .pipe(switchMap((newDto) => this.cardService.create(newDto, user)));
   }
 
   @Get()
@@ -47,15 +47,15 @@ export class CardController {
 
   @Patch(':id')
   @UseGuards(AccessGuard)
-  @UseInterceptors(CardImageUploadInterceptor)
+  @UseInterceptors(CardImagesInterceptor)
   public update(
     @Param('id', ParseObjectIdPipe) id: string,
     @Body() dto: CardDTO,
     @GetUserPrincipal() user: UserPrincipal,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() images: UploadedCardImages,
   ) {
     return this.cardService.assertCardBelongsTo(id, user).pipe(
-      switchMap((_) => this.cardService.validateImage(dto, file)),
+      switchMap((_) => this.cardService.validateImages(dto, images)),
       switchMap((newDto) => this.cardService.updateCard(id, newDto, user)),
     );
   }

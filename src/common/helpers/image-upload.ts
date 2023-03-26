@@ -4,6 +4,7 @@ import { v4 as uuid_v4 } from 'uuid';
 import { from, Observable, of, switchMap } from 'rxjs';
 import { FileTypeResult, fromFile } from 'file-type';
 import { unlinkSync } from 'fs';
+import path from 'path';
 
 // Type definitions
 type SupportedFileExtension = 'png' | 'jpg' | 'jpeg';
@@ -16,9 +17,10 @@ const allowedMimeTypes: SupportedMimeType[] = [
 ];
 export const saveImage: MulterOptions = {
   storage: diskStorage({
-    destination: './public/images',
+    destination: './public/images/',
     filename: (req, file, cb) => {
-      const fileName = uuid_v4() + '.' + file.mimetype.split('/')[1];
+      const extension = path.extname(file.originalname);
+      const fileName = uuid_v4() + extension;
       cb(null, fileName);
     },
   }),
