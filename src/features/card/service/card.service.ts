@@ -71,17 +71,17 @@ export class CardService {
     if (!images.coverImage && !images.avatarImage) {
       return of(dto);
     }
-    const coverImage = images.coverImage[0];
-    const avatarImage = images.avatarImage[0];
-
     const observables: Observable<boolean>[] = [];
-    if (coverImage) {
+
+    if (images.coverImage) {
+      const coverImage = images.coverImage[0];
       const coverObservable = this.validateImageContent(coverImage).pipe(
         tap((valid) => (valid ? (dto.coverImage = coverImage.filename) : null)),
       );
       observables.push(coverObservable);
     }
-    if (avatarImage) {
+    if (images.avatarImage) {
+      const avatarImage = images.avatarImage[0];
       const avatarObservable = this.validateImageContent(avatarImage).pipe(
         tap((valid) =>
           valid ? (dto.avatarImage = avatarImage.filename) : null,
