@@ -13,29 +13,25 @@ export class AllExceptionsFilter implements ExceptionFilter {
   private logger = new Logger();
   catch(exception: any, host: ArgumentsHost) {
     const context = host.switchToHttp();
-    const response = context.getResponse<Response>();
     const request = context.getRequest<Request>();
+    const response = context.getResponse<Response>();
 
     let status: HttpStatus;
     let message: string;
-    let stackTrace: string;
-
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       message =
-        (exception.getResponse() as StandardResponse).message ||
+        (exception.getResponse() as ExceptionResponse).message ||
         exception.message;
-      stackTrace = exception.stack;
     } else {
       status = HttpStatus.INTERNAL_SERVER_ERROR;
       message = 'Something went wrong. Try again or contact with support.';
-      stackTrace = exception instanceof Error ? exception.stack : '';
     }
     const errorResponse = this.getErrorResponse(
       request,
       status,
       message,
-      stackTrace,
+      exception instanceof Error ? exception.stack : '',
     );
     this.logError(errorResponse, exception);
     response.status(status).json(errorResponse);
@@ -64,12 +60,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
   }
 }
 
-interface StandardResponse {
+interface ExceptionResponse {
   statusCode: number;
   message: string;
 }
 
-interface HttpExceptionResponse extends StandardResponse {
+interface HttpExceptionResponse extends ExceptionResponse {
   path: string;
   method: string;
   timeStamp: Date;

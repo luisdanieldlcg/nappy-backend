@@ -7,6 +7,7 @@ import { CardRepository } from './repository/card.repository';
 import { CardService } from './service/card.service';
 import { CardInitializerService } from './service/card-init.service';
 import { MulterModule } from '@nestjs/platform-express';
+import { Card } from './schema';
 
 @Module({
   controllers: [CardController],
@@ -14,7 +15,7 @@ import { MulterModule } from '@nestjs/platform-express';
   imports: [
     MongooseModule.forFeatureAsync([
       {
-        name: databaseConstants.card.name,
+        name: Card.name,
         useFactory: cardsHooksFactory,
       },
     ]),

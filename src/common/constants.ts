@@ -8,9 +8,6 @@ export const jwtCookieConstants = {
 };
 
 export const databaseConstants = {
-  card: {
-    name: 'Card',
-  },
   user: {
     name: 'User',
     virtualFields: {

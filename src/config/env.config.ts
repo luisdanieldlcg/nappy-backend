@@ -1,11 +1,15 @@
+import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
-import { ENV_FILES } from 'src/config/env_files';
-import mainConfig from 'src/config/main.config';
+import databaseConfig from './database.config';
+export const ENV_FILES = {
+  development: '.env.dev',
+  prod: '.prod.env',
+};
 
-export default {
+const config = {
   isGlobal: true, // Allow config module everywhere
-  envFilePath: ENV_FILES[process.env.NODE_ENV] || '.env',
-  load: [mainConfig],
+  envFilePath: ENV_FILES[process.env.NODE_ENV],
+  load: [databaseConfig],
   validationSchema: Joi.object({
     NODE_ENV: Joi.string()
       .valid('development', 'debug', 'production')
@@ -18,3 +22,5 @@ export default {
     REFRESH_TOKEN_LIFETIME: Joi.number().required(),
   }),
 };
+
+export default ConfigModule.forRoot(config);

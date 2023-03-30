@@ -1,7 +1,7 @@
 import { Prop, Schema } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { createSchemaWithMethods } from '../../../common/mongo/schema.factory';
-import * as cardSchemaRules from './rules';
+import * as cardSchemaRules from './card.rules';
 
 export type CardDocument = Card & Document;
 

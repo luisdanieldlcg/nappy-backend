@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { Response } from 'express';
-import mainConfig from '../../config/main.config';
+import mainConfig from '../../config/database.config';
 import { jwtCookieConstants } from '../constants';
 
 const REFRESH_TOKEN_PATH = '/api/v1/auth/refresh-token';

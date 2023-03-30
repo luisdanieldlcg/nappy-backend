@@ -1,5 +1,5 @@
 import { ConfigType } from '@nestjs/config';
-import mainConfig from 'src/config/main.config';
+import mainConfig from 'src/config/database.config';
 
 export default {
   useFactory: async (config: ConfigType<typeof mainConfig>) => {

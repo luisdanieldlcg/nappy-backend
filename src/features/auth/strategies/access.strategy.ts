@@ -5,7 +5,7 @@ import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { lastValueFrom } from 'rxjs';
 import { jwtCookieConstants } from 'src/common/constants';
-import mainConfig from '../../../config/main.config';
+import mainConfig from '../../../config/database.config';
 import { UserService } from '../../user/service/user.service';
 import { JwtPayload } from '../interface/jwt-payload.interface';
 import { UserPrincipal } from '../interface/user-principal.interface';

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { JwtSignOptions } from '@nestjs/jwt';
-import mainConfig from 'src/config/main.config';
+import mainConfig from 'src/config/database.config';
 
 @Injectable()
 export class SettingsService {
