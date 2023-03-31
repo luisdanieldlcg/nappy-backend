@@ -10,7 +10,7 @@ import {
 
 import { Response } from 'express';
 import { AuthService } from '../service/auth.service';
-import { LoginDTO, SignupDTO } from '../dtos';
+import { LoginDto, SignupDto } from '../dtos';
 import { mergeMap, tap } from 'rxjs';
 import { CookieService } from '../../../common/services/cookie.service';
 import { AccessGuard } from '../guards';
@@ -27,7 +27,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   public async login(
-    @Body() input: LoginDTO,
+    @Body() input: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
     return this.authService.validateUser(input).pipe(
@@ -44,7 +44,7 @@ export class AuthController {
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
   public signup(
-    @Body() input: SignupDTO,
+    @Body() input: SignupDto,
     @Res({ passthrough: true }) res: Response,
   ) {
     return this.authService.register(input).pipe(
@@ -61,7 +61,6 @@ export class AuthController {
   @UseGuards(AccessGuard)
   @HttpCode(HttpStatus.OK)
   public verify(@GetUserPrincipal() user: UserPrincipal) {
-    console.log({ user });
     return {};
   }
 

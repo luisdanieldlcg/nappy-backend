@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { SignupDTO } from '../../auth/dtos';
+import { SignupDto } from '../../auth/dtos';
 import { User } from '../schema';
 
 @Injectable()
@@ -9,7 +9,7 @@ export class UserInitializerService implements OnModuleInit {
   constructor(@InjectModel(User.name) protected readonly model: Model<User>) {}
   public async onModuleInit() {
     console.log('(UserModule) Initializing');
-    const user: SignupDTO = {
+    const user: SignupDto = {
       email: 'admin@example.com',
       password: '12345678',
       passwordConfirm: '12345678',

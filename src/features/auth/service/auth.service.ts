@@ -5,11 +5,11 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../../user/service/user.service';
 
 import { EMPTY, from, map, mergeMap, Observable, of, throwIfEmpty } from 'rxjs';
-import { LoginDTO, SignupDTO } from '../dtos';
-import { InvalidCredentialsException } from '../../../common/exceptions/invalid-credentials.exception';
+import { LoginDto, SignupDto } from '../dtos';
 import { User } from '../../user/schema';
 import { SettingsService } from '../../../common/services/settings.service';
 import { JwtPayload } from '../interface/jwt-payload.interface';
+import { InvalidCredentialsException } from '../../../common/exceptions/app.exceptions';
 
 export interface TokenResponse {
   accessToken: string;
@@ -30,7 +30,7 @@ export class AuthService {
    * @param dto SignupDTO
    * @returns TokenResponse
    */
-  public register(dto: SignupDTO): Observable<TokenResponse> {
+  public register(dto: SignupDto): Observable<TokenResponse> {
     return this.userService.existsByEmail(dto.email).pipe(
       mergeMap((exists) => {
         if (exists) {
@@ -90,7 +90,7 @@ export class AuthService {
    * @param dto LoginDTO
    * @returns User
    */
-  public validateUser(dto: LoginDTO): Observable<User> {
+  public validateUser(dto: LoginDto): Observable<User> {
     // Find the user by email and include the password
     return (
       this.userService

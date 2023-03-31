@@ -4,20 +4,16 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import { cwd } from 'process';
+import { ValidationPipe } from '@nestjs/common';
+import { HttpExceptionFilter } from './common/exceptions/filters/http-exception.filter';
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.useGlobalPipes(
-    new ValidationPipe({
-      exceptionFactory(errors) {
-        console.log(errors);
-        throw new BadRequestException('Got an invalid value passed in');
-      },
-    }),
-  );
+  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalPipes(new ValidationPipe({}));
   app.setGlobalPrefix('api/v1');
   app.enableCors({
     credentials: true,
@@ -31,4 +27,5 @@ async function bootstrap() {
   const port = configService.get('SERVER_PORT') || 3001;
   await app.listen(port);
 }
+
 bootstrap();

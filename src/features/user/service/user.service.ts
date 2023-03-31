@@ -2,7 +2,7 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { EMPTY, mergeMap, Observable, of, throwIfEmpty } from 'rxjs';
 import { IUserRepository } from 'src/features/user/interface/user.repository';
 import { Projection } from '../../../common/types';
-import { SignupDTO } from '../../auth/dtos';
+import { SignupDto } from '../../auth/dtos';
 import { User } from '../schema';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class UserService {
 
   constructor(private readonly userRepository: IUserRepository) {}
 
-  public create(dto: SignupDTO): Observable<User> {
+  public create(dto: SignupDto): Observable<User> {
     return this.userRepository.create({
       ...dto,
     });

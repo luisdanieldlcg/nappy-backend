@@ -9,7 +9,7 @@ import { SettingsService } from '../../common/services/settings.service';
 import { CookieService } from '../../common/services/cookie.service';
 
 @Module({
-  imports: [UserModule, JwtModule.register(null)],
+  imports: [UserModule, JwtModule.register({})],
   providers: [
     AuthService,
     AccessStrategy,

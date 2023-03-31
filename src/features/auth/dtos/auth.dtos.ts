@@ -1,18 +1,25 @@
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
-import { minRequiredPasswordLength } from 'src/common/constants';
-import { Match } from 'src/common/decorators/validators/match.decorator';
+import { minRequiredPasswordLength } from '../../../common/constants';
+import { Match } from '../../../common/decorators/validators/match.decorator';
 
-export class LoginDTO {
-  @IsNotEmpty()
-  @IsEmail({}, { message: 'Enter a valid email.' })
+export class LoginDto {
+  @IsEmail(
+    {},
+    { message: (args) => `${args.value} is not a valid email address.` },
+  )
+  @IsNotEmpty({
+    message: 'The email field is missing.',
+  })
   readonly email: string;
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'The password field is missing.',
+  })
   @MinLength(minRequiredPasswordLength)
   readonly password: string;
 }
 
-export class SignupDTO extends LoginDTO {
-  @Match(LoginDTO, (dto) => dto.password, {
+export class SignupDto extends LoginDto {
+  @Match(LoginDto, (dto) => dto.password, {
     message: 'the passwords entered do not match.',
   })
   readonly passwordConfirm: string;

@@ -14,7 +14,7 @@ import {
 import {
   ImageFormatMismatchException,
   InvalidImageFormatException,
-} from '../../../common/exceptions/image-upload.exceptions';
+} from '../../../common/exceptions/app.exceptions';
 import {
   fileMatchesExtension,
   removeFile,
