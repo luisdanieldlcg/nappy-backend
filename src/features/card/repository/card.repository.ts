@@ -23,4 +23,8 @@ export class CardRepository extends MongoDBRepository<T> {
       new: true,
     });
   }
+
+  public deleteAll(user: UserPrincipal) {
+    return this.deleteMany({ createdBy: user.id });
+  }
 }

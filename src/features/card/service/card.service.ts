@@ -111,4 +111,8 @@ export class CardService {
       throwIfEmpty(() => new NotFoundException(`Card: ${id} was not found`)),
     );
   }
+
+  public deleteAll(user: UserPrincipal) {
+    return this.cardRepository.deleteAll(user);
+  }
 }

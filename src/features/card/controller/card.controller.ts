@@ -12,7 +12,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { switchMap } from 'rxjs';
+import { switchMap, tap } from 'rxjs';
 import { CardImagesInterceptor } from '../../../common/interceptors/card-img-upload.interceptor';
 import { ParseObjectIdPipe } from '../../../common/pipe/parse-object-id.pipe';
 import { UploadedCardImages } from '../../../common/types';
@@ -65,5 +65,12 @@ export class CardController {
   @UseGuards(AccessGuard)
   public delete(@Param('id', ParseObjectIdPipe) id: string) {
     return this.cardService.delete(id);
+  }
+
+  @Delete()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(AccessGuard)
+  public deleteAll(@GetUserPrincipal() user: UserPrincipal) {
+    return this.cardService.deleteAll(user);
   }
 }

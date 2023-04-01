@@ -35,7 +35,7 @@ export abstract class MongoDBRepository<M extends Document>
   public findById(id: string): Stream<M> {
     return from(this.entity.findById(id).exec());
   }
-  public deleteMany(filter?: Filter<M>): Stream<any> {
+  public deleteMany(filter?: Filter<M>) {
     return from(this.entity.deleteMany(filter).exec());
   }
 
