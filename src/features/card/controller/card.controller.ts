@@ -6,8 +6,8 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  Patch,
   Post,
+  Put,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -45,7 +45,7 @@ export class CardController {
     return this.cardService.getCardsByUser(user);
   }
 
-  @Patch(':id')
+  @Put(':id')
   @UseGuards(AccessGuard)
   @UseInterceptors(CardImagesInterceptor)
   public update(

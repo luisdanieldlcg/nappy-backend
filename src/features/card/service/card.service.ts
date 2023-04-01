@@ -4,6 +4,7 @@ import {
   catchError,
   EMPTY,
   forkJoin,
+  from,
   map,
   mergeMap,
   Observable,
@@ -31,7 +32,6 @@ export class CardService {
   constructor(private readonly cardRepository: CardRepository) {}
 
   public create(dto: CreateCardDTO, user: UserPrincipal) {
-    console.log({ dto });
     return this.cardRepository.create({
       firstName: dto.firstName || user.email.split('@')[0] || '',
       createdBy: user.id,
@@ -46,6 +46,7 @@ export class CardService {
   public updateCard(id: string, dto: CardDTO, user: UserPrincipal) {
     return this.cardRepository.updateById(id, dto, user);
   }
+
   private validateImageContent(file?: Express.Multer.File) {
     if (!file.filename) {
       throw new InvalidImageFormatException();
@@ -108,11 +109,43 @@ export class CardService {
   public delete(id: string) {
     return this.cardRepository.deleteById(id).pipe(
       mergeMap((p) => (p ? of(p) : EMPTY)),
-      throwIfEmpty(() => new NotFoundException(`Card: ${id} was not found`)),
+      throwIfEmpty(() => new NotFoundException(`Card ${id} was not found`)),
+      tap((card) => {
+        if (card.avatarImage) {
+          this.deleteImage(card.avatarImage);
+        }
+        if (card.coverImage) {
+          this.deleteImage(card.coverImage);
+        }
+      }),
     );
   }
 
   public deleteAll(user: UserPrincipal) {
-    return this.cardRepository.deleteAll(user);
+    const cards = this.getCardsByUser(user).pipe(
+      tap((cards) => {
+        cards.forEach((entry) => {
+          if (entry.avatarImage) {
+            this.deleteImage(entry.avatarImage);
+          }
+          if (entry.coverImage) {
+            this.deleteImage(entry.coverImage);
+          }
+        });
+      }),
+    );
+    return cards.pipe(
+      mergeMap((_) => {
+        return this.cardRepository
+          .deleteAll(user)
+          .pipe(tap((e) => console.log(e)));
+      }),
+    );
+  }
+
+  public deleteImage(path: string) {
+    const imagesPath = join(process.cwd(), 'public/images');
+    const fullPath = imagesPath + '/' + path;
+    return removeFile(fullPath);
   }
 }

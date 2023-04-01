@@ -35,9 +35,6 @@ export abstract class MongoDBRepository<M extends Document>
   public findById(id: string): Stream<M> {
     return from(this.entity.findById(id).exec());
   }
-  public deleteMany(filter?: Filter<M>) {
-    return from(this.entity.deleteMany(filter).exec());
-  }
 
   public exists(filter: Filter<M>): Stream<boolean> {
     return from(this.entity.exists(filter).exec()).pipe(
@@ -47,13 +44,23 @@ export abstract class MongoDBRepository<M extends Document>
   public deleteById(id: string): Stream<M> {
     return from(this.entity.findByIdAndDelete(id).exec());
   }
+  public deleteMany(filter?: Filter<M>) {
+    return from(
+      this.entity
+        .deleteMany(filter, {
+          rawResult: true,
+        })
+        .exec(),
+    );
+  }
+
   public update(
     filter: FilterQuery<M>,
     update: UpdateQuery<M>,
     queryOptions?: QueryOptions<M>,
   ): Stream<M> {
     return from(
-      this.entity.findOneAndUpdate(filter, update, queryOptions).exec(),
+      this.entity.findOneAndReplace(filter, update, queryOptions).exec(),
     );
   }
 }
