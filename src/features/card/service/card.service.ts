@@ -26,6 +26,8 @@ import { UserPrincipal } from '../../auth/interface/user-principal.interface';
 import { CardDTO, CreateCardDTO } from '../dto/card.dto';
 import { CardRepository } from '../repository/card.repository';
 
+const IMAGE_URL_PREFIX = 'http://localhost:3001/images/';
+
 @Injectable()
 export class CardService {
   private readonly logger = new Logger(CardService.name);
@@ -39,8 +41,33 @@ export class CardService {
     });
   }
 
-  public getCardsByUser(user: UserPrincipal) {
-    return this.cardRepository.findByUser(user);
+  public getCardsByUser(userId: string) {
+    return this.cardRepository.findByUser(userId).pipe(
+      tap((cards) => {
+        cards.forEach((card) => {
+          if (card.avatarImage) {
+            card.avatarImage = IMAGE_URL_PREFIX + card.avatarImage;
+          }
+          if (card.coverImage) {
+            card.coverImage = IMAGE_URL_PREFIX + card.coverImage;
+          }
+        });
+      }),
+    );
+  }
+
+  public getCardById(id: string) {
+    return this.cardRepository.findById(id).pipe(
+      throwIfEmpty(() => new NotFoundException('Card not found')),
+      tap((card) => {
+        if (card.avatarImage) {
+          card.avatarImage = IMAGE_URL_PREFIX + card.avatarImage;
+        }
+        if (card.coverImage) {
+          card.coverImage = IMAGE_URL_PREFIX + card.coverImage;
+        }
+      }),
+    );
   }
 
   public updateCard(id: string, dto: CardDTO, user: UserPrincipal) {
@@ -122,7 +149,7 @@ export class CardService {
   }
 
   public deleteAll(user: UserPrincipal) {
-    const cards = this.getCardsByUser(user).pipe(
+    const cards = this.getCardsByUser(user.id).pipe(
       tap((cards) => {
         cards.forEach((entry) => {
           if (entry.avatarImage) {

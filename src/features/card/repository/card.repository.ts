@@ -14,8 +14,8 @@ export class CardRepository extends MongoDBRepository<T> {
   constructor(@InjectModel(Card.name) protected readonly cardModel: Model<T>) {
     super(cardModel);
   }
-  public findByUser(user: UserPrincipal): Stream<Card[]> {
-    return this.find({ createdBy: user.id });
+  public findByUser(id: string): Stream<Card[]> {
+    return this.find({ createdBy: id });
   }
 
   public updateById(cardId: string, update: CardDTO, user: UserPrincipal) {
