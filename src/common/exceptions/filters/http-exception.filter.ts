@@ -7,7 +7,6 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { object } from 'joi';
 import { IHttpExceptionResponse } from '../interfaces';
 
 @Catch(HttpException)
@@ -20,7 +19,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = context.getRequest<Request>();
     const status = exception.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR;
     let errorMessage: string = exception.getResponse().toString();
-    console.log(JSON.stringify(exception.getResponse()));
     if (exception.getResponse() instanceof Object) {
       errorMessage =
         exception.getResponse()['message'] || 'Invalid field was sent';

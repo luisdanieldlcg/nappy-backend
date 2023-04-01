@@ -9,10 +9,12 @@ import { join } from 'path';
 import { cwd } from 'process';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './common/exceptions/filters/http-exception.filter';
+import { MongoExceptionFilter } from './common/exceptions/filters/mongo-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new MongoExceptionFilter());
   app.useGlobalPipes(new ValidationPipe({}));
   app.setGlobalPrefix('api/v1');
   app.enableCors({

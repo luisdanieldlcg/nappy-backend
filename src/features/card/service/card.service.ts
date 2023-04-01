@@ -1,6 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { join } from 'path';
 import {
+  catchError,
   EMPTY,
   forkJoin,
   map,
