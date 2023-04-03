@@ -1,10 +1,8 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { join } from 'path';
 import {
-  catchError,
   EMPTY,
   forkJoin,
-  from,
   map,
   mergeMap,
   Observable,
@@ -26,8 +24,6 @@ import { UserPrincipal } from '../../auth/interface/user-principal.interface';
 import { CardDTO, CreateCardDTO } from '../dto/card.dto';
 import { CardRepository } from '../repository/card.repository';
 
-const IMAGE_URL_PREFIX = 'http://localhost:3001/images/';
-
 @Injectable()
 export class CardService {
   private readonly logger = new Logger(CardService.name);
@@ -42,31 +38,13 @@ export class CardService {
   }
 
   public getCardsByUser(userId: string) {
-    return this.cardRepository.findByUser(userId).pipe(
-      tap((cards) => {
-        cards.forEach((card) => {
-          if (card.avatarImage) {
-            card.avatarImage = IMAGE_URL_PREFIX + card.avatarImage;
-          }
-          if (card.coverImage) {
-            card.coverImage = IMAGE_URL_PREFIX + card.coverImage;
-          }
-        });
-      }),
-    );
+    return this.cardRepository.findByUser(userId);
   }
 
   public getCardById(id: string) {
     return this.cardRepository.findById(id).pipe(
+      mergeMap((card) => (card ? of(card) : EMPTY)),
       throwIfEmpty(() => new NotFoundException('Card not found')),
-      tap((card) => {
-        if (card.avatarImage) {
-          card.avatarImage = IMAGE_URL_PREFIX + card.avatarImage;
-        }
-        if (card.coverImage) {
-          card.coverImage = IMAGE_URL_PREFIX + card.coverImage;
-        }
-      }),
     );
   }
 

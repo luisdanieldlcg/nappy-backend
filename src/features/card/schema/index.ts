@@ -5,17 +5,8 @@ import * as cardSchemaRules from './card.rules';
 
 export type CardDocument = Card & Document;
 
-@Schema({
-  timestamps: true,
-  toJSON: {
-    virtuals: true,
-  },
-  toObject: {
-    virtuals: true,
-  },
-})
+@Schema()
 export class Card extends mongoose.Document {
-  _id: string;
   @Prop(cardSchemaRules.labelRules)
   label: string;
   @Prop(cardSchemaRules.firstNameRules)

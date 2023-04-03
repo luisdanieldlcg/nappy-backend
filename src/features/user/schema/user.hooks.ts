@@ -1,9 +1,9 @@
 import { databaseConstants, passwordHashRounds } from 'src/common/constants';
 import { makeHash } from 'src/common/helpers/bcrypt';
 import { Card } from '../../card/schema';
-import { UserSchema } from '.';
+import { UserDocument, UserSchema } from '.';
 
-async function handlePasswordHash(next) {
+async function handlePasswordHash(this: UserDocument, next) {
   if (!this.isModified('password')) {
     return next();
   }

@@ -4,8 +4,6 @@ import { v4 as uuid_v4 } from 'uuid';
 import { from, Observable, of, switchMap } from 'rxjs';
 import { FileTypeResult, fromFile } from 'file-type';
 import { unlinkSync } from 'fs';
-import path from 'path';
-import mime from 'mime';
 
 // Type definitions
 type SupportedFileExtension = 'png' | 'jpg' | 'jpeg';

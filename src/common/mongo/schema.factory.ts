@@ -7,6 +7,7 @@ import { SchemaFactory } from '@nestjs/mongoose';
  */
 export function createSchemaWithMethods<T>(target: new () => T) {
   const schema = SchemaFactory.createForClass<T>(target);
+
   const proto = target.prototype;
   const descriptors = Object.getOwnPropertyDescriptors(proto);
   for (const name in descriptors) {
@@ -23,6 +24,26 @@ export function createSchemaWithMethods<T>(target: new () => T) {
         .set(descriptors[name].set);
     }
   }
+
+  schema.set('timestamps', true);
+  schema.set('toObject', {
+    virtuals: true,
+    transform(doc, ret, _) {
+      delete ret._id;
+      delete ret.__v;
+      delete ret.createdAt;
+      delete ret.updatedAt;
+    },
+  });
+  schema.set('toJSON', {
+    virtuals: true,
+    transform(doc, ret, _) {
+      delete ret._id;
+      delete ret.__v;
+      delete ret.createdAt;
+      delete ret.updatedAt;
+    },
+  });
 
   return schema;
 }

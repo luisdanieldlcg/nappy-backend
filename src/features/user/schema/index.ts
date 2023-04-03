@@ -7,9 +7,7 @@ import * as userSchemaRules from './user.rules';
 
 export type UserDocument = User & Document;
 
-@Schema({
-  timestamps: true,
-})
+@Schema()
 export class User extends Document {
   @Prop(userSchemaRules.emailRules)
   email: string;

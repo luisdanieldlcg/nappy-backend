@@ -10,9 +10,13 @@ import { cwd } from 'process';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './common/exceptions/filters/http-exception.filter';
 import { MongoExceptionFilter } from './common/exceptions/filters/mongo-exception.filter';
+import fs from 'fs-extra';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  // I want to remove all the files in the public/images folder
+  // when the server starts.
+  fs.emptyDirSync(join(cwd(), 'public/images'));
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalFilters(new MongoExceptionFilter());
   app.useGlobalPipes(new ValidationPipe({}));
