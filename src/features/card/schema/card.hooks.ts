@@ -31,10 +31,17 @@ function addImageUrlPrefixToAll(
 
 function addImageUrlPrefix(doc: CardDocument) {
   if (doc.avatarImage) {
-    doc.avatarImage = IMAGE_URL_PREFIX + doc.avatarImage;
+    // check if it doesnt have the prefix already.
+    // If it does, we dont need to add it again
+    if (!doc.avatarImage.startsWith('http')) {
+      doc.avatarImage = IMAGE_URL_PREFIX + doc.avatarImage;
+    }
   }
   if (doc.coverImage) {
-    doc.coverImage = IMAGE_URL_PREFIX + doc.coverImage;
+    // same here
+    if (!doc.coverImage.startsWith('http')) {
+      doc.coverImage = IMAGE_URL_PREFIX + doc.coverImage;
+    }
   }
 }
 export const cardsHooksFactory = () => {

@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { databaseConstants } from '../../../common/constants';
 import { SchemaRule } from '../../../common/types';
+import { LinkDefinition } from '../dto/card.dto';
 
 // set undefined value if empty
 const undefinedIfEmpty = (val?: string) => {
@@ -59,4 +60,10 @@ export const colorRules: SchemaRule = {
     // in the format of #RRGGBB or #RGB, where R, G, and B represent red, green, and blue color components respectively.
     validator: (val: string) => /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(val),
   },
+};
+
+export const linkRules: SchemaRule = {
+  type: LinkDefinition,
+  required: false,
+  default: [],
 };

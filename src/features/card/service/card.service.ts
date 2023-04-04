@@ -1,8 +1,14 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { join } from 'path';
 import {
   EMPTY,
   forkJoin,
+  from,
   map,
   mergeMap,
   Observable,
@@ -21,15 +27,16 @@ import {
 } from '../../../common/helpers/image-upload';
 import { UploadedCardImages } from '../../../common/types';
 import { UserPrincipal } from '../../auth/interface/user-principal.interface';
-import { CardDTO, CreateCardDTO } from '../dto/card.dto';
+import { CardDTO, CreateCardDTO, LinkDefinition } from '../dto/card.dto';
 import { CardRepository } from '../repository/card.repository';
+import { Card } from '../schema';
 
 @Injectable()
 export class CardService {
   private readonly logger = new Logger(CardService.name);
   constructor(private readonly cardRepository: CardRepository) {}
 
-  public create(dto: CreateCardDTO, user: UserPrincipal) {
+  public create(dto: Partial<CreateCardDTO>, user: UserPrincipal) {
     return this.cardRepository.create({
       firstName: dto.firstName || user.email.split('@')[0] || '',
       createdBy: user.id,
@@ -48,8 +55,8 @@ export class CardService {
     );
   }
 
-  public updateCard(id: string, dto: CardDTO, user: UserPrincipal) {
-    return this.cardRepository.updateById(id, dto, user);
+  public updateCard(id: string, dto: Partial<CardDTO>, user: UserPrincipal) {
+    return this.cardRepository.updateById(id, dto);
   }
 
   private validateImageContent(file?: Express.Multer.File) {
@@ -69,9 +76,9 @@ export class CardService {
     );
   }
   public validateImages(
-    dto: CreateCardDTO,
+    dto: CardDTO,
     images: UploadedCardImages,
-  ): Observable<CreateCardDTO> {
+  ): Observable<Partial<Card>> {
     if (!images) {
       return of(dto);
     }

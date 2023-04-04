@@ -19,7 +19,7 @@ import { UploadedCardImages } from '../../../common/types';
 import { GetUserPrincipal } from '../../auth/decorators/user-principal.decorator';
 import { AccessGuard } from '../../auth/guards';
 import { UserPrincipal } from '../../auth/interface/user-principal.interface';
-import { CardDTO, CreateCardDTO } from '../dto/card.dto';
+import { CardDTO, CreateCardDTO, UpdateCardDTO } from '../dto/card.dto';
 import { CardService } from '../service/card.service';
 
 @Controller('cards')
@@ -56,7 +56,7 @@ export class CardController {
   @UseInterceptors(CardImagesInterceptor)
   public update(
     @Param('id', ParseObjectIdPipe) id: string,
-    @Body() dto: CardDTO,
+    @Body() dto: UpdateCardDTO,
     @GetUserPrincipal() user: UserPrincipal,
     @UploadedFiles() images: UploadedCardImages,
   ) {

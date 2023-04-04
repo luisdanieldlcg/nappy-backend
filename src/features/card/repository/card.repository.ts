@@ -18,7 +18,7 @@ export class CardRepository extends MongoDBRepository<T> {
     return this.find({ createdBy: id });
   }
 
-  public updateById(cardId: string, update: CardDTO, user: UserPrincipal) {
+  public updateById(cardId: string, update: Partial<CardDTO>) {
     return this.update({ _id: cardId }, update, {
       new: true,
     });

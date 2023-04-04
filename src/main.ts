@@ -19,7 +19,12 @@ async function bootstrap() {
   fs.emptyDirSync(join(cwd(), 'public/images'));
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalFilters(new MongoExceptionFilter());
-  app.useGlobalPipes(new ValidationPipe({}));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }),
+  );
   app.setGlobalPrefix('api/v1');
   app.enableCors({
     credentials: true,

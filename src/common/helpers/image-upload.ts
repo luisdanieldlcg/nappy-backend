@@ -20,7 +20,6 @@ export const saveImage: MulterOptions = {
     filename: (req, file, cb) => {
       const extension = file.mimetype.split('/')[1];
       const fileName = uuid_v4() + '.' + extension;
-      console.log('Saving image: ' + fileName);
       cb(null, fileName);
     },
   }),

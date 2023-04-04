@@ -1,6 +1,7 @@
 import { Prop, Schema } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { createSchemaWithMethods } from '../../../common/mongo/schema.factory';
+import { LinkDefinition } from '../dto/card.dto';
 import * as cardSchemaRules from './card.rules';
 
 export type CardDocument = Card & Document;
@@ -21,12 +22,14 @@ export class Card extends mongoose.Document {
   coverImage?: string;
   @Prop(cardSchemaRules.avatarImageRules)
   avatarImage?: string;
+  @Prop(cardSchemaRules.colorRules)
+  color: string;
+  @Prop(cardSchemaRules.linkRules)
+  links?: LinkDefinition[];
   // I decided to make parent referencing because the user could potentially have
   // huge array of cards which could reach to the document size limit.
   @Prop(cardSchemaRules.userRules)
   createdBy: mongoose.Schema.Types.ObjectId;
-  @Prop(cardSchemaRules.colorRules)
-  color: string;
 }
 
 export const CardSchema = createSchemaWithMethods(Card);
