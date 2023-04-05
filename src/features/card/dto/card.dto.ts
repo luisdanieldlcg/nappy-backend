@@ -4,17 +4,27 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  Validate,
   ValidateNested,
 } from 'class-validator';
-import { isValidObjectId, ObjectId } from 'mongoose';
+import { ObjectId } from 'mongoose';
 
-type SocialLink = 'instagram' | 'facebook' | 'whatsapp';
-type CommunicationLink = 'discord' | 'linkedin' | 'github';
+type SocialLink =
+  | 'instagram'
+  | 'twitter'
+  | 'snapchat'
+  | 'linkedin'
+  | 'facebook';
 
-const socialLinks = ['instagram', 'facebook', 'whatsapp'];
-const communicationLinks = ['discord', 'linkedin', 'github', 'email'];
+type CommunicationLink = 'email' | 'phone' | 'whatsapp' | 'skype' | 'discord';
 
+const socialLinks = [
+  'instagram',
+  'twitter',
+  'snapchat',
+  'linkedin',
+  'facebook',
+];
+const communicationLinks = ['email', 'phone', 'whatsapp', 'skype', 'discord'];
 const allLinks = [...socialLinks, ...communicationLinks];
 
 export class LinkDefinition {
