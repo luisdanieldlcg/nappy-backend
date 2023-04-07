@@ -1,5 +1,6 @@
 import { plainToClass, Transform, Type } from 'class-transformer';
 import {
+  IsBoolean,
   IsIn,
   IsNotEmpty,
   IsOptional,
@@ -8,23 +9,23 @@ import {
 } from 'class-validator';
 import { ObjectId } from 'mongoose';
 
-type SocialLink =
-  | 'instagram'
-  | 'twitter'
-  | 'snapchat'
-  | 'linkedin'
-  | 'facebook';
+type SocialLink = 'instagram' | 'twitter' | 'tiktok' | 'linkedin' | 'facebook';
 
-type CommunicationLink = 'email' | 'phone' | 'whatsapp' | 'skype' | 'discord';
+type CommunicationLink =
+  | 'email'
+  | 'phone'
+  | 'whatsapp'
+  | 'discord'
+  | 'telegram';
 
-const socialLinks = [
-  'instagram',
-  'twitter',
-  'snapchat',
-  'linkedin',
-  'facebook',
+const socialLinks = ['instagram', 'twitter', 'tiktok', 'linkedin', 'facebook'];
+const communicationLinks = [
+  'email',
+  'phone',
+  'whatsapp',
+  'discord',
+  'telegram',
 ];
-const communicationLinks = ['email', 'phone', 'whatsapp', 'skype', 'discord'];
 const allLinks = [...socialLinks, ...communicationLinks];
 
 export class LinkDefinition {
@@ -32,7 +33,7 @@ export class LinkDefinition {
   @IsNotEmpty()
   title: string;
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   subtitle: string;
   @IsIn(allLinks)
   @IsNotEmpty()
@@ -81,6 +82,12 @@ export class CardDTO {
   })
   @ValidateNested({ each: true })
   links: LinkDefinition[];
+
+  @IsOptional()
+  @Transform((arg) => {
+    return arg.value === 'true';
+  })
+  useNativeIcons: boolean;
 }
 export class CreateCardDTO extends CardDTO {}
 

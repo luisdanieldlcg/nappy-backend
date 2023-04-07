@@ -67,3 +67,9 @@ export const linkRules: SchemaRule = {
   required: false,
   default: [],
 };
+
+export const useNativeIconsRules: SchemaRule = {
+  type: Boolean,
+  default: false,
+  required: false,
+};

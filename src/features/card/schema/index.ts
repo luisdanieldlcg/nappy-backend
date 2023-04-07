@@ -26,6 +26,8 @@ export class Card extends mongoose.Document {
   color: string;
   @Prop(cardSchemaRules.linkRules)
   links?: LinkDefinition[];
+  @Prop(cardSchemaRules.useNativeIconsRules)
+  useNativeIcons: boolean;
   // I decided to make parent referencing because the user could potentially have
   // huge array of cards which could reach to the document size limit.
   @Prop(cardSchemaRules.userRules)

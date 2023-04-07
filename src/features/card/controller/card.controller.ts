@@ -19,7 +19,7 @@ import { UploadedCardImages } from '../../../common/types';
 import { GetUserPrincipal } from '../../auth/decorators/user-principal.decorator';
 import { AccessGuard } from '../../auth/guards';
 import { UserPrincipal } from '../../auth/interface/user-principal.interface';
-import { CardDTO, CreateCardDTO, UpdateCardDTO } from '../dto/card.dto';
+import { CreateCardDTO, UpdateCardDTO } from '../dto/card.dto';
 import { CardService } from '../service/card.service';
 
 @Controller('cards')
