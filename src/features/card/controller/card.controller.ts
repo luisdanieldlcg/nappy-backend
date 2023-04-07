@@ -15,12 +15,13 @@ import {
 import { switchMap } from 'rxjs';
 import { CardImagesInterceptor } from '../../../common/interceptors/card-img-upload.interceptor';
 import { ParseObjectIdPipe } from '../../../common/pipe/parse-object-id.pipe';
-import { UploadedCardImages } from '../../../common/types';
+import { CardImages, UploadedCardImages } from '../../../common/types';
 import { GetUserPrincipal } from '../../auth/decorators/user-principal.decorator';
 import { AccessGuard } from '../../auth/guards';
 import { UserPrincipal } from '../../auth/interface/user-principal.interface';
 import { CreateCardDTO, UpdateCardDTO } from '../dto/card.dto';
 import { CardService } from '../service/card.service';
+import { ParseCardImagesPipe } from '../../../common/pipe/parse-card-images.pipe';
 
 @Controller('cards')
 export class CardController {
@@ -32,11 +33,11 @@ export class CardController {
   public create(
     @Body() dto: CreateCardDTO,
     @GetUserPrincipal() user: UserPrincipal,
-    @UploadedFiles() images: UploadedCardImages,
+    @UploadedFiles(new ParseCardImagesPipe()) images: CardImages,
   ) {
-    return this.cardService
-      .validateImages(dto, images)
-      .pipe(switchMap((newDto) => this.cardService.create(newDto, user)));
+    // create the union of the dto and the images
+    const newDto: CreateCardDTO = { ...dto, ...images };
+    return this.cardService.create(newDto, user);
   }
 
   // Public route
@@ -58,12 +59,15 @@ export class CardController {
     @Param('id', ParseObjectIdPipe) id: string,
     @Body() dto: UpdateCardDTO,
     @GetUserPrincipal() user: UserPrincipal,
-    @UploadedFiles() images: UploadedCardImages,
+    @UploadedFiles(new ParseCardImagesPipe()) images: CardImages,
   ) {
-    return this.cardService.assertCardBelongsTo(id, user).pipe(
-      switchMap((_) => this.cardService.validateImages(dto, images)),
-      switchMap((newDto) => this.cardService.updateCard(id, newDto, user)),
-    );
+    // create the union of the dto and the images
+    const newDto = { ...dto, ...images };
+    return this.cardService
+      .assertCardBelongsTo(id, user)
+      .pipe(
+        switchMap((newDto) => this.cardService.updateCard(id, newDto, user)),
+      );
   }
 
   @Delete(':id')

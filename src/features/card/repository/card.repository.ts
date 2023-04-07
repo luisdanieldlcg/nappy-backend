@@ -5,7 +5,9 @@ import { MongoDBRepository } from 'src/interface/repository/impl/mongo.repositor
 import { Stream } from '../../../interface/repository/repository';
 import { UserPrincipal } from '../../auth/interface/user-principal.interface';
 import { CardDTO } from '../dto/card.dto';
-import { Card, CardDocument } from '../schema';
+import { Card, CardDocument } from '../schema/card.schema';
+import { switchMap } from 'rxjs';
+import { deleteCardImages } from '../schema/card.hooks';
 
 type T = CardDocument;
 
@@ -25,6 +27,13 @@ export class CardRepository extends MongoDBRepository<T> {
   }
 
   public deleteAll(user: UserPrincipal) {
-    return this.deleteMany({ createdBy: user.id });
+    const cards = this.findByUser(user.id);
+
+    return cards.pipe(
+      switchMap((cards) => {
+        cards.forEach((card) => deleteCardImages(card, null));
+        return this.deleteMany({ createdBy: user.id });
+      }),
+    );
   }
 }

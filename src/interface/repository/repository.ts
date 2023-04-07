@@ -1,4 +1,4 @@
-import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose';
+import { FilterQuery, QueryOptions, UpdateQuery, mongo } from 'mongoose';
 import { Observable } from 'rxjs';
 
 export type Stream<T> = Observable<T>;
@@ -12,7 +12,7 @@ export interface IRepository<T> {
   create(dto: object): Stream<T>;
   deleteMany(filter?: Filter<T>): Stream<any>;
   exists(filter: Filter<T>): Stream<boolean>;
-  deleteById(id: string): Stream<T>;
+  deleteById(id: string): Stream<any>;
   update(
     filter: FilterQuery<T>,
     update: UpdateQuery<T>,

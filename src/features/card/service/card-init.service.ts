@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Card } from '../schema';
+import { Card } from '../schema/card.schema';
 
 @Injectable()
 export class CardInitializerService implements OnModuleInit {

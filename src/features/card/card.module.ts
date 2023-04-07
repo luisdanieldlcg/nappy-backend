@@ -6,7 +6,7 @@ import { CardRepository } from './repository/card.repository';
 import { CardService } from './service/card.service';
 import { CardInitializerService } from './service/card-init.service';
 import { MulterModule } from '@nestjs/platform-express';
-import { Card } from './schema';
+import { Card } from './schema/card.schema';
 
 @Module({
   controllers: [CardController],

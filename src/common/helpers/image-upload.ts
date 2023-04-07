@@ -5,16 +5,20 @@ import { from, Observable, of, switchMap } from 'rxjs';
 import { FileTypeResult, fromFile } from 'file-type';
 import { unlinkSync } from 'fs';
 import { BadRequestException } from '@nestjs/common';
+import { join } from 'path';
 
 // Type definitions
+
 type SupportedFileExtension = 'png' | 'jpg' | 'jpeg';
 type SupportedMimeType = 'image/png' | 'image/jpg' | 'image/jpeg';
+
 const allowedExtensions: SupportedFileExtension[] = ['png', 'jpg', 'jpeg'];
 const allowedMimeTypes: SupportedMimeType[] = [
   'image/png',
   'image/jpg',
   'image/jpeg',
 ];
+
 export const saveImage: MulterOptions = {
   limits: {
     // 5MB
@@ -24,6 +28,10 @@ export const saveImage: MulterOptions = {
     destination: './public/images/',
     filename: (req, file, cb) => {
       const extension = file.mimetype.split('/')[1];
+      if (!extension || !allowedExtensions.includes(extension as any)) {
+        console.log('filename');
+        return new BadRequestException('Invalid file tyxpe');
+      }
       const fileName = uuid_v4() + '.' + extension;
       cb(null, fileName);
     },
@@ -72,10 +80,14 @@ export const fileMatchesExtension = (path: string): Observable<boolean> => {
     }),
   );
 };
-export const removeFile = (path: string): void => {
+export const removeImage = (path: string): void => {
+  const imagesPath = join(process.cwd(), 'public/images');
+  const fullPath = imagesPath + '/' + path;
   try {
-    unlinkSync(path);
+    unlinkSync(fullPath);
   } catch (error) {
-    console.log('Got an error: ', error);
+    console.error('Got an error: ', error);
   }
 };
+
+export const imageUploadPath = join(process.cwd(), 'public/images');

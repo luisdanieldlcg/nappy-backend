@@ -1,6 +1,6 @@
 import { databaseConstants, passwordHashRounds } from 'src/common/constants';
 import { makeHash } from 'src/common/helpers/bcrypt';
-import { Card } from '../../card/schema';
+import { Card } from '../../card/schema/card.schema';
 import { UserDocument, UserSchema } from '.';
 
 async function handlePasswordHash(this: UserDocument, next) {

@@ -9,3 +9,7 @@ export type UploadedCardImages = {
   coverImage?: Express.Multer.File[];
   avatarImage?: Express.Multer.File[];
 };
+export type CardImages = {
+  coverImage?: string;
+  avatarImage?: string;
+};

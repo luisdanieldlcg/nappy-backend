@@ -1,4 +1,5 @@
-import { Card, CardDocument, CardSchema } from '.';
+import { removeImage } from '../../../common/helpers/image-upload';
+import { Card, CardDocument, CardSchema } from './card.schema';
 
 const IMAGE_URL_PREFIX = 'http://localhost:3001/images/';
 
@@ -44,10 +45,26 @@ function addImageUrlPrefix(doc: CardDocument) {
     }
   }
 }
+
+export function deleteCardImages(doc: Card, next: () => void) {
+  if (doc.avatarImage) {
+    const avatarPath = doc.avatarImage.split('/images/')[1];
+    removeImage(avatarPath);
+  }
+  if (doc.coverImage) {
+    const coverPath = doc.coverImage.split('/images/')[1];
+    removeImage(coverPath);
+  }
+  if (next) {
+    next();
+  }
+}
+
 export const cardsHooksFactory = () => {
   const schema = CardSchema;
   schema.pre(/^find/, populateFindQueries);
   schema.post(/^find/, addImageUrlPrefixToAll);
   schema.post('save', addImageUrlPrefix);
+  schema.post('findOneAndDelete', deleteCardImages);
   return schema;
 };
