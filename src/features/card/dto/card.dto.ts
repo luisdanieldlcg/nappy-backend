@@ -1,44 +1,12 @@
 import { plainToClass, Transform, Type } from 'class-transformer';
 import {
-  IsBoolean,
-  IsIn,
   IsNotEmpty,
   IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
 import { ObjectId } from 'mongoose';
-
-type SocialLink = 'instagram' | 'twitter' | 'tiktok' | 'linkedin' | 'facebook';
-
-type CommunicationLink =
-  | 'email'
-  | 'phone'
-  | 'whatsapp'
-  | 'discord'
-  | 'telegram';
-
-const socialLinks = ['instagram', 'twitter', 'tiktok', 'linkedin', 'facebook'];
-const communicationLinks = [
-  'email',
-  'phone',
-  'whatsapp',
-  'discord',
-  'telegram',
-];
-const allLinks = [...socialLinks, ...communicationLinks];
-
-export class LinkDefinition {
-  @IsString()
-  @IsNotEmpty()
-  title: string;
-  @IsString()
-  @IsOptional()
-  subtitle: string;
-  @IsIn(allLinks)
-  @IsNotEmpty()
-  type?: SocialLink | CommunicationLink;
-}
+import { LinkDTO } from './link.dto';
 
 export class CardDTO {
   @IsString()
@@ -74,14 +42,14 @@ export class CardDTO {
   color: string;
 
   @IsOptional()
-  @Type(() => LinkDefinition)
+  @Type(() => LinkDTO)
   @Transform((arg) => {
     const links = JSON.parse(arg.value);
-    const linkObjects = plainToClass(LinkDefinition, links);
+    const linkObjects = plainToClass(LinkDTO, links);
     return linkObjects;
   })
   @ValidateNested({ each: true })
-  links: LinkDefinition[];
+  links: LinkDTO[];
 
   @IsOptional()
   @Transform((arg) => {

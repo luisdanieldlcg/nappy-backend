@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { databaseConstants } from 'src/common/constants';
 import { CardController } from './controller/card.controller';
 import { cardsHooksFactory } from './schema/card.hooks';
 import { CardRepository } from './repository/card.repository';

@@ -4,6 +4,7 @@ import { v4 as uuid_v4 } from 'uuid';
 import { from, Observable, of, switchMap } from 'rxjs';
 import { FileTypeResult, fromFile } from 'file-type';
 import { unlinkSync } from 'fs';
+import { BadRequestException } from '@nestjs/common';
 
 // Type definitions
 type SupportedFileExtension = 'png' | 'jpg' | 'jpeg';
@@ -15,6 +16,10 @@ const allowedMimeTypes: SupportedMimeType[] = [
   'image/jpeg',
 ];
 export const saveImage: MulterOptions = {
+  limits: {
+    // 5MB
+    fileSize: 5 * 1024 * 1024,
+  },
   storage: diskStorage({
     destination: './public/images/',
     filename: (req, file, cb) => {
@@ -28,10 +33,22 @@ export const saveImage: MulterOptions = {
     file: Express.Multer.File,
     cb: multer.FileFilterCallback,
   ) => {
-    // Do not allow other mime types
-    return allowedMimeTypes.includes(file.mimetype as SupportedMimeType)
-      ? cb(null, true)
-      : cb(null, false);
+    // Check if the file extension is allowed
+    const extension = file.mimetype.split('/')[1] as SupportedFileExtension;
+    if (!allowedExtensions.includes(extension)) {
+      // Pass an error message to the callback function
+      return cb(
+        new BadRequestException(`File type ${extension} is not allowed`),
+      );
+    }
+    // Check if the file mime type is allowed
+    const mime = file.mimetype as SupportedMimeType;
+    if (!allowedMimeTypes.includes(mime)) {
+      // Pass an error message to the callback function
+      return cb(new BadRequestException(`Mime type ${mime} is not allowed`));
+    }
+    // Allow the file to be uploaded
+    return cb(null, true);
   },
 };
 

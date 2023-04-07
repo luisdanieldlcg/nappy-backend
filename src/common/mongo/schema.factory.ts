@@ -1,11 +1,21 @@
 import { SchemaFactory } from '@nestjs/mongoose';
 
+export type CustomSchemaOptions = {
+  timestamps: boolean;
+};
+
+const defaultSchemaOptions: CustomSchemaOptions = {
+  timestamps: false,
+};
 /**
  * Allow the schema to contain defined methods.
  * @param target
  * @returns
  */
-export function createSchemaWithMethods<T>(target: new () => T) {
+export function createSchemaWithMethods<T>(
+  target: new () => T,
+  options: CustomSchemaOptions = defaultSchemaOptions,
+) {
   const schema = SchemaFactory.createForClass<T>(target);
 
   const proto = target.prototype;
@@ -25,7 +35,7 @@ export function createSchemaWithMethods<T>(target: new () => T) {
     }
   }
 
-  schema.set('timestamps', true);
+  schema.set('timestamps', options.timestamps);
   schema.set('toObject', {
     virtuals: true,
     transform(doc, ret, _) {

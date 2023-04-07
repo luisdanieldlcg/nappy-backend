@@ -27,7 +27,7 @@ import {
 } from '../../../common/helpers/image-upload';
 import { UploadedCardImages } from '../../../common/types';
 import { UserPrincipal } from '../../auth/interface/user-principal.interface';
-import { CardDTO, CreateCardDTO, LinkDefinition } from '../dto/card.dto';
+import { CardDTO, CreateCardDTO } from '../dto/card.dto';
 import { CardRepository } from '../repository/card.repository';
 import { Card } from '../schema';
 

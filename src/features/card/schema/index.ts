@@ -1,37 +1,39 @@
 import { Prop, Schema } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { createSchemaWithMethods } from '../../../common/mongo/schema.factory';
-import { LinkDefinition } from '../dto/card.dto';
-import * as cardSchemaRules from './card.rules';
+import { SchemaRules } from '../../../common/mongo/schema.rules';
+import { Link, LinkSchema } from './link/link.schema';
 
 export type CardDocument = Card & Document;
 
 @Schema()
 export class Card extends mongoose.Document {
-  @Prop(cardSchemaRules.labelRules)
-  label: string;
-  @Prop(cardSchemaRules.firstNameRules)
+  @Prop(SchemaRules.defaultedStringNotRequired('Work'))
+  label?: string;
+  @Prop(SchemaRules.stringRequired('firstName'))
   firstName: string;
-  @Prop(cardSchemaRules.lastNameRules)
+  @Prop(SchemaRules.stringNotRequired)
   lastName?: string;
-  @Prop(cardSchemaRules.jobTitleRules)
+  @Prop(SchemaRules.stringNotRequired)
   jobTitle?: string;
-  @Prop(cardSchemaRules.companyRules)
+  @Prop(SchemaRules.stringNotRequired)
   company?: string;
-  @Prop(cardSchemaRules.backgroundImageRules)
+  @Prop(SchemaRules.stringNotRequired)
   coverImage?: string;
-  @Prop(cardSchemaRules.avatarImageRules)
+  @Prop(SchemaRules.stringNotRequired)
   avatarImage?: string;
-  @Prop(cardSchemaRules.colorRules)
+  @Prop(SchemaRules.hexColorRules)
   color: string;
-  @Prop(cardSchemaRules.linkRules)
-  links?: LinkDefinition[];
-  @Prop(cardSchemaRules.useNativeIconsRules)
+  @Prop({ type: [LinkSchema], required: false, default: [] })
+  links?: Link[];
+  @Prop(SchemaRules.boolNotRequired)
   useNativeIcons: boolean;
   // I decided to make parent referencing because the user could potentially have
   // huge array of cards which could reach to the document size limit.
-  @Prop(cardSchemaRules.userRules)
+  @Prop(SchemaRules.parentRefRules('User', 'Card'))
   createdBy: mongoose.Schema.Types.ObjectId;
 }
 
-export const CardSchema = createSchemaWithMethods(Card);
+export const CardSchema = createSchemaWithMethods(Card, {
+  timestamps: true,
+});
