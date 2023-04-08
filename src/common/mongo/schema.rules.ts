@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { SchemaRule } from '../types';
+import { LinkType } from '../../features/card/dto/link.dto';
 
 export class SchemaRules {
   // set undefined value if empty
@@ -58,17 +59,6 @@ export class SchemaRules {
       type: mongoose.Schema.Types.ObjectId,
       ref: parentName,
       required: [true, `${childName} must belong to a ${parentName}.`],
-    };
-  };
-
-  public static mustBelongTo = (enumValues: string[]): SchemaRule => {
-    return {
-      type: String,
-      enum: enumValues,
-      required: [
-        true,
-        `Must be one of the following: ${enumValues.join(', ')}`,
-      ],
     };
   };
 }
