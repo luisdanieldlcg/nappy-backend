@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import { SchemaRule } from '../types';
-import { LinkType } from '../../features/card/dto/link.dto';
 
 export class SchemaRules {
   // set undefined value if empty

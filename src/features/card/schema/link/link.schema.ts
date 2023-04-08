@@ -3,39 +3,34 @@ import { SchemaRules } from '../../../../common/mongo/schema.rules';
 import { createSchemaWithMethods } from '../../../../common/mongo/schema.factory';
 import { LinkType, allowedCardLinks } from '../../dto/link.dto';
 import { SchemaRule } from '../../../../common/types';
-import { ValidatorProps } from 'mongoose';
-import { Card } from '../card.schema';
-import { isNumber } from 'class-validator';
+import { isValidPhoneLink } from '../../../../common/validation';
 
 const isValidLinkType: SchemaRule = {
   type: String,
   enum: allowedCardLinks,
+  required: [
+    true,
+    `The Link type must be one of the following: ${allowedCardLinks.join()}`,
+  ],
+};
+const isValidLinkTitle: SchemaRule = {
+  type: String,
   required: true,
   validate: {
-    message: (props: ValidatorProps) => {
-      //
-      if (props.value === 'phone') {
-        return 'The phone field must match the following format: "ext:phone"';
+    message: 'Invalid link title.',
+    validator: function (this: Link, val: string) {
+      if (this.type === 'phone') {
+        console.log('Checking if its valid phone');
+        return isValidPhoneLink(val);
       }
-      return `The Link type must be one of the following: ${allowedCardLinks.join()}`;
-    },
-    validator(val: LinkType) {
-      if (val === 'phone') {
-        // validate it matches the following format:
-        // +ext:phone
-        if (/^\+\d+:\d{8}$/.test(val)) {
-          return false;
-        }
-      }
-      return allowedCardLinks.includes(val);
+      return false;
     },
   },
 };
-
 // Card subdocument schema for links.
 @Schema()
 export class Link {
-  @Prop(SchemaRules.stringRequired('title'))
+  @Prop(isValidLinkTitle)
   title: string;
   @Prop(SchemaRules.stringNotRequired)
   subtitle: string;
