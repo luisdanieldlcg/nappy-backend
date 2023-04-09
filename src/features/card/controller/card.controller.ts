@@ -37,6 +37,7 @@ export class CardController {
   ) {
     // create the union of the dto and the images
     const newDto: CreateCardDTO = { ...dto, ...images };
+    console.log({ newDto });
     return this.cardService.create(newDto, user);
   }
 

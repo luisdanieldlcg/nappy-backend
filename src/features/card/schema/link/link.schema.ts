@@ -20,10 +20,9 @@ const isValidLinkTitle: SchemaRule = {
     message: 'Invalid link title.',
     validator: function (this: Link, val: string) {
       if (this.type === 'phone') {
-        console.log('Checking if its valid phone');
         return isValidPhoneLink(val);
       }
-      return false;
+      return true;
     },
   },
 };
