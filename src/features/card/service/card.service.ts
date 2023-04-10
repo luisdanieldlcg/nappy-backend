@@ -11,6 +11,7 @@ export class CardService {
   constructor(private readonly cardRepository: CardRepository) {}
 
   public create(dto: Partial<CreateCardDTO>, user: UserPrincipal) {
+    console.log({ dto });
     return this.cardRepository.create({
       firstName: dto.firstName || user.email.split('@')[0] || '',
       createdBy: user.id,

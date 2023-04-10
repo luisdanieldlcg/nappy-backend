@@ -55,11 +55,20 @@ export class CardDTO {
   @Transform((arg) => {
     return arg.value === 'true';
   })
-  useNativeIcons: boolean;
+  useNativeIcons = false;
 }
-export class CreateCardDTO extends CardDTO {}
+export class CreateCardDTO extends CardDTO {
+  constructor() {
+    super();
+    this.useNativeIcons = false;
+  }
+}
 
 export class UpdateCardDTO extends CardDTO {
+  constructor() {
+    super();
+    this.useNativeIcons = false;
+  }
   @IsString()
   @IsNotEmpty()
   createdBy: ObjectId;

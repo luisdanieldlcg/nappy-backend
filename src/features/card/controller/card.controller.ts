@@ -37,7 +37,6 @@ export class CardController {
   ) {
     // create the union of the dto and the images
     const newDto: CreateCardDTO = { ...dto, ...images };
-    console.log({ newDto });
     return this.cardService.create(newDto, user);
   }
 
@@ -62,13 +61,23 @@ export class CardController {
     @GetUserPrincipal() user: UserPrincipal,
     @UploadedFiles(new ParseCardImagesPipe()) images: CardImages,
   ) {
+    // return this.cardService
+    //   .assertCardBelongsTo(id, user)
+    //   .pipe(
+    //     switchMap((newDto) => this.cardService.updateCard(id, newDto, user)),
+    //   );
+
     // create the union of the dto and the images
-    const newDto = { ...dto, ...images };
-    return this.cardService
-      .assertCardBelongsTo(id, user)
-      .pipe(
-        switchMap((newDto) => this.cardService.updateCard(id, newDto, user)),
-      );
+    const newDto = { ...dto };
+
+    // If the images are all null, then we don't want to update the images
+    if (images.coverImage) {
+      newDto.coverImage = images.coverImage;
+    }
+    if (images.avatarImage) {
+      newDto.avatarImage = images.avatarImage;
+    }
+    return this.cardService.updateCard(id, newDto, user);
   }
 
   @Delete(':id')
