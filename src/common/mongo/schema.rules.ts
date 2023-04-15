@@ -5,6 +5,7 @@ export class SchemaRules {
   // set undefined value if empty
   public static undefinedIfEmpty = (val?: string) => {
     if (!val) return undefined;
+    if (val === 'null') return undefined;
     return val;
   };
 
