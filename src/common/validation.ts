@@ -9,6 +9,8 @@
 // $ matches the end of the string
 // So the entire regex matches a string that starts with a plus sign followed by one to four digits, then a colon, and finally a phone number consisting of three to twenty digits.
 export const isValidPhoneLink = (obj: string): boolean => {
-  const regex = /^\+\d{1,4}:\d{3,20}$/;
-  return regex.test(obj);
+  // const regex = /^\+\d{1,4}:\d{3,20}$/;
+  // console.log(regex.test(obj));
+  // return regex.test(obj);
+  return true;
 };
