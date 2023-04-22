@@ -1,12 +1,18 @@
 import { minRequiredPasswordLength } from 'src/common/constants';
 import { SchemaRule } from 'src/common/types';
 import { User } from '.';
+import { SchemaRules } from '../../../common/mongo/schema.rules';
 
 export const emailRules: SchemaRule = {
   type: String,
   required: [true, "'email' is missing."],
   unique: true,
   lowercase: true,
+};
+export const usernameRules: SchemaRules = {
+  type: String,
+  required: [true, `'username' is missing.`],
+  unique: true,
 };
 export const passwordRules: SchemaRule = {
   type: String,

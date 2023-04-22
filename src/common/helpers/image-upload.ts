@@ -29,7 +29,6 @@ export const saveImage: MulterOptions = {
     filename: (req, file, cb) => {
       const extension = file.mimetype.split('/')[1];
       if (!extension || !allowedExtensions.includes(extension as any)) {
-        console.log('filename');
         return new BadRequestException('Invalid file tyxpe');
       }
       const fileName = uuid_v4() + '.' + extension;

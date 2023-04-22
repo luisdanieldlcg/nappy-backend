@@ -24,13 +24,19 @@ export class SchemaRules {
     };
   };
 
-  public static stringRequired = (fieldName: string) => {
+  public static stringRequired = (fieldName: string): SchemaRule => {
     return {
       type: String,
       required: [true, `'${fieldName}' is missing.`],
     };
   };
-
+  public static uniqueStringRequired = (fieldName: string): SchemaRule => {
+    return {
+      type: String,
+      required: [true, `'${fieldName}' is missing.`],
+      unique: true,
+    };
+  };
   public static boolNotRequired: SchemaRule = {
     type: Boolean,
     required: false,

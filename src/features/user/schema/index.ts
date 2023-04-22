@@ -4,6 +4,7 @@ import { from, Observable } from 'rxjs';
 import { createSchemaWithMethods } from '../../../common/mongo/schema.factory';
 import { checkHash } from '../../../common/helpers/bcrypt';
 import * as userSchemaRules from './user.rules';
+import { SchemaRules } from '../../../common/mongo/schema.rules';
 
 export type UserDocument = User & Document;
 
@@ -17,6 +18,12 @@ export class User extends Document {
   passwordConfirm: string;
   @Prop(userSchemaRules.refreshTokenRules)
   refreshToken: string;
+  @Prop(SchemaRules.stringRequired('firstName'))
+  firstName: string;
+  @Prop(SchemaRules.stringRequired('lastName'))
+  lastName: string;
+  @Prop(userSchemaRules.usernameRules)
+  username: string;
   comparePassword(password: string): Observable<boolean> {
     return from(
       checkHash({
