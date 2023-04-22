@@ -3,11 +3,19 @@ import mongoose from 'mongoose';
 import { createSchemaWithMethods } from '../../../common/mongo/schema.factory';
 import { SchemaRules } from '../../../common/mongo/schema.rules';
 import { Link, LinkSchema } from './link/link.schema';
+import { SchemaRule } from '../../../common/types';
 
 export type CardDocument = Card & Document;
 
+const slugRules: SchemaRule = {
+  type: String,
+  required: true,
+};
+
 @Schema()
 export class Card extends mongoose.Document {
+  @Prop(slugRules)
+  slug: string;
   @Prop(SchemaRules.defaultedStringNotRequired('Work'))
   label?: string;
   @Prop(SchemaRules.stringRequired('firstName'))

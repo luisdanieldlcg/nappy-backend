@@ -15,7 +15,6 @@ export class UserInitializerService implements OnModuleInit {
       passwordConfirm: '12345678',
       firstName: 'Luis',
       lastName: 'de la Cruz',
-      username: 'admin',
     };
     await this.model.deleteMany({});
     await this.model.create(user).then((data) => console.log(data));

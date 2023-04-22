@@ -11,6 +11,9 @@ import { LinkDTO } from './link.dto';
 export class CardDTO {
   @IsString()
   @IsOptional()
+  slug: string;
+  @IsString()
+  @IsOptional()
   label: string;
 
   @IsString()

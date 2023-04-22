@@ -29,7 +29,4 @@ export class SignupDto extends LoginDto {
   @IsString()
   @IsNotEmpty()
   readonly lastName: string;
-  @IsString()
-  @IsNotEmpty()
-  readonly username: string;
 }

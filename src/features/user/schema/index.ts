@@ -22,8 +22,6 @@ export class User extends Document {
   firstName: string;
   @Prop(SchemaRules.stringRequired('lastName'))
   lastName: string;
-  @Prop(userSchemaRules.usernameRules)
-  username: string;
   comparePassword(password: string): Observable<boolean> {
     return from(
       checkHash({
