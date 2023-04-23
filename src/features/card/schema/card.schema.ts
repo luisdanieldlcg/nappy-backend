@@ -18,7 +18,7 @@ export class Card extends mongoose.Document {
   slug: string;
   @Prop(SchemaRules.defaultedStringNotRequired('Work'))
   label?: string;
-  @Prop(SchemaRules.stringRequired('firstName'))
+  @Prop(SchemaRules.stringNotRequired)
   firstName: string;
   @Prop(SchemaRules.stringNotRequired)
   lastName?: string;

@@ -1,4 +1,10 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 import { minRequiredPasswordLength } from '../../../common/constants';
 import { Match } from '../../../common/decorators/validators/match.decorator';
 
@@ -24,9 +30,9 @@ export class SignupDto extends LoginDto {
   })
   readonly passwordConfirm: string;
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   readonly firstName: string;
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   readonly lastName: string;
 }

@@ -18,9 +18,9 @@ export class User extends Document {
   passwordConfirm: string;
   @Prop(userSchemaRules.refreshTokenRules)
   refreshToken: string;
-  @Prop(SchemaRules.stringRequired('firstName'))
+  @Prop(SchemaRules.stringNotRequired)
   firstName: string;
-  @Prop(SchemaRules.stringRequired('lastName'))
+  @Prop(SchemaRules.stringNotRequired)
   lastName: string;
   comparePassword(password: string): Observable<boolean> {
     return from(
